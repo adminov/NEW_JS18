@@ -39,8 +39,8 @@ let namePerson = {
 };
 
 let result = namePerson.Jek ? 'директор' : 'error';
-let result1 = namePerson.Maxim ? 'директор' : 'error';
-let result2 = namePerson.Noname ? 'директор' : 'error';
+let result1 = namePerson.Maxim ? 'преподаватель' : 'error';
+let result2 = namePerson.Noname ? 'студент' : 'error';
 
 console.log(result);
 console.log(result1);
