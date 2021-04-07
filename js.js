@@ -38,9 +38,11 @@ let namePerson = {
     Noname : 'студент',
 };
 
-let result = namePerson.Jek ? 'директор' : 'error';
-let result1 = namePerson.Maxim ? 'преподаватель' : 'error';
-let result2 = namePerson.Noname ? 'студент' : 'error';
+console.log(typeof namePerson.Jek);
+
+let result = namePerson.Jek === namePerson.Jek ? 'директор' : 'error';
+let result1 = namePerson.Maxim === namePerson.Maxim ? 'преподаватель' : 'error';
+let result2 = namePerson.Noname !== namePerson.Noname ? 'error' : 'студент';
 
 console.log(result);
 console.log(result1);
