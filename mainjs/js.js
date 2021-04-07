@@ -32,7 +32,7 @@ console.log('бюджет на день: ' + Math.floor(budgetDay));
 
 if (budgetDay >= 1200){
     console.log('У вас высокий уровень дохода')
-} else if (budgetDay >= 400) {
+} else if (budgetDay >= 600) {
     console.log('У вас средний уровень дохода')
 } else {
     console.log('К сожалению у вас уровень дохода ниже среднего')
