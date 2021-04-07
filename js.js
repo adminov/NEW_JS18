@@ -28,24 +28,15 @@ let lang = prompt('Напишите: ru или en');
             break;
         case 'en':
             lang = ['mn', 'ts', 'wd', 'th', 'fr', 'st', 'sn'];
+        default:
     }
 
     console.log(lang);
 }
 
 
-let namePerson = {
-    Jek : 'директор',
-    Maxim : 'преподаватель',
-    Noname : 'студент',
-};
+let namePerson = 'Maxim';
 
-console.log(typeof namePerson.Jek);
-
-let result = namePerson.Jek === namePerson.Jek ? 'директор' : 'error';
-let result1 = namePerson.Maxim === namePerson.Maxim ? 'преподаватель' : 'error';
-let result2 = namePerson.Noname !== namePerson.Noname ? 'error' : 'студент';
-
-console.log(result);
-console.log(result1);
-console.log(result2);
+console.log((namePerson === 'Max') ?
+    'CEO' : (namePerson === 'Maxim') ?
+        'teacher' : 'student');
