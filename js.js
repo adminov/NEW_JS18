@@ -1,42 +1,20 @@
 'use strict';
-let lang = prompt('Напишите: ru или en');
-{
-//через многомерный массив:
-    let lan = {
-        'ru': ['пн', 'вт', 'ср', 'чт', 'пт', 'сб', 'вс'],
-        'en': ['mn', 'ts', 'wd', 'th', 'fr', 'st', 'sn']
-    };
-    console.log(lan[lang]);
-}
 
-{
-//через ив
-    if (lang === 'ru') {
-        lang = ['пн', 'вт', 'ср', 'чт', 'пт', 'сб', 'вс'];
-    } else {
-        lang = ['mn', 'ts', 'wd', 'th', 'fr', 'st', 'sn'];
+const num = 266219;
+
+const numbig = (numStr) => {
+    let res = 1;
+    for (let i = 0; i < numStr.length; i++) {
+        res = res * numStr[i];
     }
+    return res;
+};
 
-    console.log(lang);
-}
-
-{
-//через свитч
-    switch (lang) {
-        case 'ru':
-            lang = ['пн', 'вт', 'ср', 'чт', 'пт', 'сб', 'вс'];
-            break;
-        case 'en':
-            lang = ['mn', 'ts', 'wd', 'th', 'fr', 'st', 'sn'];
-        default:
-    }
-
-    console.log(lang);
-}
+const resNum = numbig(num.toString());
+console.log(resNum);
 
 
-let namePerson = 'Maxim';
+const step = resNum ** 3;
+console.log(step);
 
-console.log((namePerson === 'Max') ?
-    'CEO' : (namePerson === 'Maxim') ?
-        'teacher' : 'student');
+console.log(step.toString().substr(0, 2));
