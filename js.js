@@ -1,35 +1,37 @@
 'use strict';
 let lang = prompt('Напишите: ru или en');
-
+{
 //через многомерный массив:
+    let lan = {
+        'ru': ['пн', 'вт', 'ср', 'чт', 'пт', 'сб', 'вс'],
+        'en': ['mn', 'ts', 'wd', 'th', 'fr', 'st', 'sn']
+    };
+    console.log(lan[lang]);
+}
 
-let lan = {
-    'ru': ['пн', 'вт', 'ср', 'чт', 'пт', 'сб', 'вс'],
-    'en': ['mn', 'ts', 'wd', 'th', 'fr', 'st', 'sn']
-};
-
-console.log(lan[lang]);
-
+{
 //через ив
-if (lang === 'ru') {
-    lang = ['пн', 'вт', 'ср', 'чт', 'пт', 'сб', 'вс'];
-} else {
-    lang = ['mn', 'ts', 'wd', 'th', 'fr', 'st', 'sn'];
-}
-
-console.log(lang);
-
-//через свитч
-switch (lang) {
-    case 'ru':
+    if (lang === 'ru') {
         lang = ['пн', 'вт', 'ср', 'чт', 'пт', 'сб', 'вс'];
-        break;
-    case 'en':
+    } else {
         lang = ['mn', 'ts', 'wd', 'th', 'fr', 'st', 'sn'];
+    }
+
+    console.log(lang);
 }
 
-console.log(lang);
+{
+//через свитч
+    switch (lang) {
+        case 'ru':
+            lang = ['пн', 'вт', 'ср', 'чт', 'пт', 'сб', 'вс'];
+            break;
+        case 'en':
+            lang = ['mn', 'ts', 'wd', 'th', 'fr', 'st', 'sn'];
+    }
 
+    console.log(lang);
+}
 
 
 let namePerson = {
