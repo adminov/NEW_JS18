@@ -67,7 +67,7 @@ const getStatusIncome = () => {
         console.log('У вас высокий уровень дохода')
     } else if (budgetDay >= 600) {
         console.log('У вас средний уровень дохода')
-    } else if (budgetDay !== 0){
+    } else if (budgetDay >= 0){
         console.log('К сожалению у вас уровень дохода ниже среднего')
     } else {
         console.log('Что то пошло не так')
