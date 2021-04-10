@@ -27,14 +27,11 @@ const getExpensesMonth = () => {
     let sum = 0;
     for(let i = 0; i < 2; i++){
         expenses[i] = prompt('Введите обязательную статью расходов?', 'expenses1');
-        //Такой способ используется для инкапсуляция когда хотим изолировать код от окружающих
-        sum += (() =>{
-            let sums = 0;
-            do {
-                sums = prompt('Во сколько это обойдется?', '6000');
-            } while (!isNumber(sums));
-            return +sums;
-        })();
+        sums = prompt('Во сколько это обойдется?', '6000');
+        
+        if (isNumber(sums)){
+            sum += sums
+        }      
     }
     return sum;
 };
