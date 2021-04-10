@@ -1,20 +1,18 @@
 'use strict';
 
-const num = 266219;
-
-const numbig = (numStr) => {
-    let res = 1;
-    for (let i = 0; i < numStr.length; i++) {
-        res = res * numStr[i];
+const hardTask = (arg) => {
+        let res = '';
+    if (typeof arg === 'string'){
+        const lengthMax = 30;
+        const str = arg.trim();
+        if (str.length > lengthMax){
+            res = str.substr(0, lengthMax) + '...';
+        } else {
+            res = str;
+        }
     }
     return res;
 };
-
-const resNum = numbig(num.toString());
-console.log(resNum);
-
-
-const step = resNum ** 3;
-console.log(step);
-
-console.log(step.toString().substr(0, 2));
+console.log(hardTask(5));
+console.log(hardTask(' my names is Batish '));
+console.log(hardTask(' my names is Batish, he lives in Kyrgyzstan '));
