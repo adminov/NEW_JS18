@@ -1,18 +1,18 @@
 'use strict';
 
-const hardTask = (arg) => {
-        let res = '';
+let oneArg = (arg) => {
+    let res = 'число';
     if (typeof arg === 'string'){
-        const lengthMax = 30;
-        const str = arg.trim();
-        if (str.length > lengthMax){
-            res = str.substr(0, lengthMax) + '...';
+        let maxlength = 30;
+        if (arg.length > maxlength){
+            res = arg.trim().substr(0, 30) + '...';
         } else {
-            res = str;
+            res = arg.trim();
         }
     }
     return res;
 };
-console.log(hardTask(5));
-console.log(hardTask(' my names is Batish '));
-console.log(hardTask(' my names is Batish, he lives in Kyrgyzstan '));
+
+console.log('number: ' + oneArg(5));
+console.log('before 30: ' + oneArg('    My name '));
+console.log('...: ' + oneArg('   My name is Batish, he lives in Kyrgyzstan, city TashKumyr '));
