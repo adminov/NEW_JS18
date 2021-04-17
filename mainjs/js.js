@@ -4,98 +4,97 @@ let isNumber = (n) => {
 };
 
 let money,
-    start = function () {
+    start = () => {
         do {
             money = +prompt('Ваш месячный доход', '50000');
         } while (!isNumber(money));
         appData.budget = money;
     };
-start();
 
 let appData = {
-    income: {},
+    income: {}, //доп доход
     addIncome: [],
     expenses: {},
-    addExpenses: [],
-    deposit: false,
+    addExpenses: [],//допол, расходов
+    deposit: false, //депозит в банке
     mission: 200000,
     period: 5,
-    budget: 0,
-    budgetDay: 0,
-    budgetMonth: 0,
+    budget: false, // Доход за месяц
+    budgetDay: 0, // Доход за день
+    budgetMonth: 0, //обязательных расходов за месяц
     expensesMonth: 0,
     asking: function () {
         let addExpenses = prompt('Перечислите возможные расходы за рассчитываемый период через запятую', 'пример: "Квартплата, проездной, кредит"');
         appData.addExpenses = addExpenses.split(', ');
         appData.deposit = confirm('Есть ли у вас депозит в банке?');
-    }
-};
-
-//Добавить проверку что введённые данные являются числом, которые мы получаем
-// на вопрос 'Во сколько это обойдется?’ в функции  getExpensesMonth
-let expenses = [];
-const getExpensesMonth = () => {
-    let sum = 0;
-    let sums;
-    for(let i = 0; i < 2; i++){
-        expenses[i] = prompt('Введите обязательную статью расходов?', 'expenses1');
-        do {
-            sums = prompt('Во сколько это обойдется?', '6000');
+        //------------------------------------------------------------------
+        for (let i = 0; i < 2; i++){
+            //Ананимная функция может вызвать само себя (() => {})
+            //такой способ используется для инкапсуляция когда хотим изолировать код от окружающих
+            appData.expenses[prompt('Введите обязательную статью расходов?')] = (() => {
+                let price = 0;
+                do {
+                    price = prompt('Во сколько это обойдется?');
+                } while (!isNumber(price));
+                //+price чтобы было число
+                return +price;
+            })();
         }
-        while (isNaN(sums) || sums === ' ' || sums === null)
-
-        sum += +sums
+    },
+    // Функция возвращает сумму всех обязательных расходов за месяц
+    getExpensesMonth: () => {
+        appData.expensesMonth = 0;
+        for (let key in appData.expenses){
+            appData.expensesMonth += appData.expenses[key];
+        }
+    },
+    // Функция возвращает Накопления за месяц (Доходы минус расходы)
+    getBudget: () => {
+        appData.budgetMonth = appData.budget - appData.expensesMonth;
+        appData.budgetDay = Math.floor(appData.budgetMonth / 30);
+    },
+    // Подсчитывает за какой период будет достигнута цель
+    getTargetMonth: () => {
+        return Math.ceil(appData.mission / appData.budgetMonth);
+    },
+    getStatusIncome: () => {
+        if (appData.budgetDay >= 1200){
+            console.log('У вас высокий уровень дохода')
+        } else if (appData.budgetDay >= 600) {
+            console.log('У вас средний уровень дохода')
+        } else if (appData.budgetDay >= 0){
+            console.log('К сожалению у вас уровень дохода ниже среднего')
+        } else {
+            console.log('Что то пошло не так')
+        }
     }
-    return sum;
 };
+start();
+appData.asking();
+appData.getExpensesMonth();
+appData.getBudget();
 
-let expensesAmount = getExpensesMonth();
+let targetMonth = appData.getTargetMonth();
 
-//Функция возвращает Накопления за месяц (Доходы минус расходы)
-const getAccumulatedMonth = function() {
-    return money - expensesAmount;
-};
-
-//Подсчитывает за какой период будет достигнута цель, зная результат месячного накопления
-const getTargetMonth = function() {
-    return appData.mission / getAccumulatedMonth;
-};
-
-let getTargetMonthMoney = getTargetMonth();
-
-
-//budgetDay высчитываем исходя из значения месячного накопления (accumulatedMonth)
-let budgetDay = getAccumulatedMonth() / 30;
-
+console.log('ЗП в месяц: ' + appData.budget);
 
 //цель заработать
 console.log('цель заработать: ' + appData.mission);
 
-//расходы за месяц
-console.log('Расходы: ' + appData.addExpenses);
-
 //- Расходы за месяц вызов getExpensesMonth
-console.log('расходов за месяц: ' + expensesAmount);
+console.log('расходов за месяц: ' + appData.expensesMonth);
 
-// - Cрок достижения цели в месяцах (результат вызова функции getTargetMonth)
 // 3) Если getTargetMonth возвращает нам отрицательное значение, то вместо “Цель будет достигнута” необходимо выводить “Цель не будет достигнута”
-(Math.ceil(getTargetMonthMoney) >= 0) ?
-    console.log('будет достигнута за месяцев: ' + Math.ceil(getTargetMonthMoney)) :
+(Math.ceil(targetMonth) >= 0) ?
+    console.log('будет достигнута за месяцев: ' + Math.ceil(targetMonth)) :
     console.log('Цель не будет достигнута');
 
 //- Бюджет на день (budgetDay)
-console.log('бюджет на день: ' + Math.floor(budgetDay));
+console.log('бюджет на день: ' + Math.floor(appData.budgetDay));
+appData.getStatusIncome();
 
-const getStatusIncome = () => {
-    if (budgetDay >= 1200){
-        console.log('У вас высокий уровень дохода')
-    } else if (budgetDay >= 600) {
-        console.log('У вас средний уровень дохода')
-    } else if (budgetDay >= 0){
-        console.log('К сожалению у вас уровень дохода ниже среднего')
-    } else {
-        console.log('Что то пошло не так')
-    }
-};
-
-getStatusIncome();
+//Используя цикл for in для объекта (appData), вывести в консоль сообщение "Наша программа включает в себя данные: " (вывести все свойства и значения)
+console.log('Наша программа включает в себя данные:');
+for (let key in appData){
+    console.log(key, appData[key]);
+}
