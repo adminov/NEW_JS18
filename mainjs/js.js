@@ -8,7 +8,6 @@ let money,
         do {
             money = +prompt('Ваш месячный доход', '50000');
         } while (!isNumber(money));
-        appData.budget = money;
     };
 
 let appData = {
@@ -19,7 +18,7 @@ let appData = {
     deposit: false, //депозит в банке
     mission: 200000,
     period: 5,
-    budget: false, // Доход за месяц
+    budget: money, // Доход за месяц
     budgetDay: 0, // Доход за день
     budgetMonth: 0, //обязательных расходов за месяц
     expensesMonth: 0,
@@ -43,7 +42,6 @@ let appData = {
     },
     // Функция возвращает сумму всех обязательных расходов за месяц
     getExpensesMonth: () => {
-        appData.expensesMonth = 0;
         for (let key in appData.expenses){
             appData.expensesMonth += appData.expenses[key];
         }
