@@ -3,13 +3,10 @@ let isNumber = (n) => {
     return !isNaN(parseFloat(n)) && isFinite(n);
 };
 
-let money,
-    start = () => {
-        do {
-            money = +prompt('Ваш месячный доход', '50000');
-        } while (!isNumber(money));
-        appData.budget = money;
-    };
+let isStr = (str, reg = false) => {
+    const regexp = reg ? /^[, а-яА-ЯёЁa-zA-Z]+$/ : /^[ а-яА-ЯёЁa-zA-Z]+$/;
+    return regexp.test(str);
+};
 
 let appData = {
     income: {}, //доп доход
@@ -17,24 +14,47 @@ let appData = {
     expenses: {},
     addExpenses: [],//допол, расходов
     deposit: false, //депозит в банке
+    percentDeposit: 0,
+    moneyDeposit: 0,
     mission: 200000,
     period: 5,
-    budget: false, // Доход за месяц
+    budget: 0, // Доход за месяц
     budgetDay: 0, // Доход за день
     budgetMonth: 0, //обязательных расходов за месяц
     expensesMonth: 0,
     asking: function () {
-        let addExpenses = prompt('Перечислите возможные расходы за рассчитываемый период через запятую', 'пример: "Квартплата, проездной, кредит"');
-        appData.addExpenses = addExpenses.split(', ');
+
+        if (confirm('Есть ли у вас дополнительный источник заработка')){
+            let itemIncome = '';
+            do {
+                itemIncome = prompt('Какой у вас дополнительный заработок', 'Таксую');
+            }while (!isStr(itemIncome));
+
+            let cashIncome = '';
+            do {
+                cashIncome = prompt('Сколько в месяц вы зарабатываете', '10000');
+                appData.income[itemIncome] = cashIncome;
+            }while (!isNumber(cashIncome))
+        }
+        let addExpenses = '';
+        do {
+            addExpenses = prompt('Перечислите возможные расходы за рассчитываемый период через запятую', 'Квартплата, проездной, кредит');
+        } while (!isStr(addExpenses, true));
+        appData.addExpenses = addExpenses.charAt(0).toUpperCase() + addExpenses.substring(1);
+
         appData.deposit = confirm('Есть ли у вас депозит в банке?');
         //------------------------------------------------------------------
         for (let i = 0; i < 2; i++){
             //Ананимная функция может вызвать само себя (() => {})
             //такой способ используется для инкапсуляция когда хотим изолировать код от окружающих
-            appData.expenses[prompt('Введите обязательную статью расходов?')] = (() => {
+            let exp = '';
+            do {
+                exp = prompt('Введите обязательную статью расходов?', 'exp1')
+            } while (!isStr(exp));
+            appData.expenses[exp] = (() => {
                 let price = 0;
                 do {
-                    price = prompt('Во сколько это обойдется?');
+                    price = prompt('Во сколько это обойдется?', '4000');
                 } while (!isNumber(price));
                 //+price чтобы было число
                 return +price;
@@ -43,7 +63,6 @@ let appData = {
     },
     // Функция возвращает сумму всех обязательных расходов за месяц
     getExpensesMonth: () => {
-        appData.expensesMonth = 0;
         for (let key in appData.expenses){
             appData.expensesMonth += appData.expenses[key];
         }
@@ -67,8 +86,26 @@ let appData = {
         } else {
             console.log('Что то пошло не так')
         }
+    },
+    getInfoDeposit: () => {
+        if (appData.deposit){
+            appData.percentDeposit = prompt('Какой годовой процент', '10');
+            appData.moneyDeposit = prompt('Какая сумма заложена', '10000');
+        }
+    },
+    calcSavedMoney: () => {
+        return appData.budgetMonth * appData.period;
     }
 };
+//----------------------------------------------------------------------------
+let money,
+    start = () => {
+        do {
+            money = +prompt('Ваш месячный доход', '50000');
+        } while (!isNumber(money));
+        appData.budget = money;
+    };
+//----------------------------------------------------------------------------
 start();
 appData.asking();
 appData.getExpensesMonth();
@@ -94,7 +131,11 @@ console.log('бюджет на день: ' + Math.floor(appData.budgetDay));
 appData.getStatusIncome();
 
 //Используя цикл for in для объекта (appData), вывести в консоль сообщение "Наша программа включает в себя данные: " (вывести все свойства и значения)
-console.log('Наша программа включает в себя данные:');
-for (let key in appData){
-    console.log(key, appData[key]);
-}
+// console.log('Наша программа включает в себя данные:');
+// for (let key in appData){
+//     console.log(key, appData[key]);
+// }
+
+appData.getInfoDeposit();
+console.log(appData.percentDeposit, appData.moneyDeposit, appData.calcSavedMoney());
+console.log(appData.addExpenses);
