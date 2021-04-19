@@ -9,6 +9,7 @@ let money,
             money = +prompt('Ваш месячный доход', '50000');
         } while (!isNumber(money));
     };
+start();
 
 let appData = {
     income: {}, //доп доход
@@ -67,7 +68,6 @@ let appData = {
         }
     }
 };
-start();
 appData.asking();
 appData.getExpensesMonth();
 appData.getBudget();
