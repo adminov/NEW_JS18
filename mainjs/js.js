@@ -8,6 +8,16 @@ let isStr = (str, reg = false) => {
     return regexp.test(str);
 };
 
+//----------------------------------------------------------------------------
+let money,
+    start = () => {
+        do {
+            money = +prompt('Ваш месячный доход', '50000');
+        } while (!isNumber(money));
+    };
+//----------------------------------------------------------------------------
+start();
+
 let appData = {
     income: {}, //доп доход
     addIncome: [],
@@ -18,7 +28,7 @@ let appData = {
     moneyDeposit: 0,
     mission: 200000,
     period: 5,
-    budget: 0, // Доход за месяц
+    budget: money, // Доход за месяц
     budgetDay: 0, // Доход за день
     budgetMonth: 0, //обязательных расходов за месяц
     expensesMonth: 0,
@@ -28,7 +38,7 @@ let appData = {
             let itemIncome = '';
             do {
                 itemIncome = prompt('Какой у вас дополнительный заработок', 'Таксую');
-            }while (!isStr(itemIncome));
+            }while (isNumber(itemIncome));
 
             let cashIncome = '';
             do {
@@ -50,7 +60,7 @@ let appData = {
             let exp = '';
             do {
                 exp = prompt('Введите обязательную статью расходов?', 'exp1')
-            } while (!isStr(exp));
+            } while (isNumber(exp));
             appData.expenses[exp] = (() => {
                 let price = 0;
                 do {
@@ -89,24 +99,23 @@ let appData = {
     },
     getInfoDeposit: () => {
         if (appData.deposit){
-            appData.percentDeposit = prompt('Какой годовой процент', '10');
-            appData.moneyDeposit = prompt('Какая сумма заложена', '10000');
+            let percentDeposit = '';
+            do {
+                percentDeposit = prompt('Какой годовой процент', '10');
+            } while (!isNumber(percentDeposit));
+            appData.percentDeposit = +percentDeposit;
+            let moneyDeposit = '';
+            do {
+                moneyDeposit = prompt('Какая сумма заложена', '10000');
+            } while (!isNumber(moneyDeposit));
+            appData.moneyDeposit = +moneyDeposit;
         }
     },
     calcSavedMoney: () => {
         return appData.budgetMonth * appData.period;
     }
 };
-//----------------------------------------------------------------------------
-let money,
-    start = () => {
-        do {
-            money = +prompt('Ваш месячный доход', '50000');
-        } while (!isNumber(money));
-        appData.budget = money;
-    };
-//----------------------------------------------------------------------------
-start();
+
 appData.asking();
 appData.getExpensesMonth();
 appData.getBudget();
