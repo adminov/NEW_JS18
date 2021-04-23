@@ -50,7 +50,7 @@ let appData = {
         do {
             addExpenses = prompt('Перечислите возможные расходы за рассчитываемый период через запятую', 'Квартплата, проездной, кредит');
         } while (!isStr(addExpenses, true));
-        appData.addExpenses = addExpenses.charAt(0).toUpperCase() + addExpenses.substring(1);
+        appData.addExpenses = addExpenses.split(', ').map((key, i) => key[0].toUpperCase() + key.slice(1)).join(', ');
 
         appData.deposit = confirm('Есть ли у вас депозит в банке?');
         //------------------------------------------------------------------
