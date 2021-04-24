@@ -23,7 +23,7 @@ let budgetMonth = document.getElementsByClassName('.budget_month-value'),
 	additionalIncome = document.getElementsByClassName('.additional_income-value'),
 	additionalExpenses = document.getElementsByClassName('.additional_expenses-value'),
 	incomePeriod = document.getElementsByClassName('.income_period-value'),
-	targetMonth = document.getElementsByClassName('.target_month-value');
+	targetMonthValue = document.getElementsByClassName('.target_month-value');
 
 let salaryAmount = document.querySelector('.salary-amount'),
 	incomeTitle = document.querySelector('.income-title'),
