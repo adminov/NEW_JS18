@@ -40,6 +40,12 @@ let btnPlus = document.getElementsByTagName('.btn_plus');
 let btnPlusTwo = document.getElementsByTagName('.btn_plus');
 let additionalIncomeItem = document.querySelectorAll('.additional_income-item');
 
+console.log(budgetMonth, budgetDay, expensesMonth, additionalIncome, additionalExpenses, incomePeriod, targetMonths);
+
+console.log(salaryAmount, incomeTitle, incomeAmount, expensesTitle, expensesAmount, additionalExpensesItem, targetAmount, periodSelect);
+
+console.log(Calculate, depositCheck, btnPlus, btnPlusTwo, additionalIncomeItem);
+
 let appData = {
 	income: {}, //доп доход
 	addIncome: [],
