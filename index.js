@@ -80,6 +80,8 @@ let appData = {
 	//Добавление блоков для Обязательные расходы
 	addExpensesBlock: () => {
 		let cloneExpensesItem = expensesItems[0].cloneNode(true);
+		cloneExpensesItem.querySelector('.expenses-title').value = '';
+		cloneExpensesItem.querySelector('.expenses-amount').value = '';
 		expensesItems[0].parentNode.insertBefore(cloneExpensesItem, expensesPlus);
 		expensesItems = document.querySelectorAll('.expenses-items');
 		if (expensesItems.length === 3){
@@ -99,6 +101,8 @@ let appData = {
 	//Добавление блоков для Дополнительный доход
 	addIncomeBlock: () => {
 		let cloneExpensesItem = incomeItems[0].cloneNode(true);
+		cloneExpensesItem.querySelector('.income-title').value = '';
+		cloneExpensesItem.querySelector('.income-amount').value = '';
 		incomeItems[0].parentNode.insertBefore(cloneExpensesItem, incomePlus);
 		incomeItems = document.querySelectorAll('.income-items');
 		if (incomeItems.length === 3){
@@ -169,3 +173,39 @@ start.addEventListener('click', appData.start);
 expensesPlus.addEventListener('click', appData.addExpensesBlock);
 incomePlus.addEventListener('click', appData.addIncomeBlock);
 periodSelect.addEventListener('input', appData.changeRangeValue);
+
+//проверка только на число
+const isNumber = (e) =>{
+	let tmpVal = e.target.value;
+	const changeInputNum = (event) =>{
+		if (!/^[\d]+$/.test(e.target.value)){
+			alert('Ввод только цифр!');
+			event.target.value = tmpVal;
+			event.target.removeEventListener('change', changeInputNum);
+		}
+		tmpVal = event.target.value;
+	};
+	e.target.addEventListener('change', changeInputNum);
+};
+
+document.querySelectorAll('[placeholder="Сумма"]').forEach((i) => {
+	i.addEventListener('focus', isNumber);
+});
+
+//проверка на букв, пробел, точки и запятой
+const isString = (e) => {
+	let tmpStr = e.target.value;
+	const changeInputStr = (event) => {
+		if (!/^[,. а-яА-ЯёЁ]+$/.test(event.target.value)){
+			alert('Ввод только русских букв, пробелы, точки и запятой!');
+			event.target.value = tmpStr;
+			event.target.removeEventListener('change', changeInputStr);
+		}
+		tmpStr = event.target.value;
+	};
+	e.target.addEventListener('change', changeInputStr);
+};
+
+document.querySelectorAll('[placeholder="Наименование"]').forEach((i) => {
+	i.addEventListener('focus', isString);
+});
