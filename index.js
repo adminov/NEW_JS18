@@ -41,19 +41,12 @@ let appData = {
 	percentDeposit: 0,
 	moneyDeposit: 0,
 	incomeMoth: 0,
-	//mission: 200000,
-	//period: 5,
 	budget: 0, // Доход за месяц
 	budgetDay: 0, // Доход за день
 	budgetMonth: 0, //обязательных расходов за месяц
 	expensesMonth: 0,
-	beforeStart: () => {
-		if (salaryAmount.value.trim() === ''){
-			alert('Ошибка, поле "Месячный доход" должно быть заполнено!');
-		}
-	},
 	start: () => {
-		if (!appData.beforeStart()) {
+		if (salaryAmount.value.trim() !== '') {
 			appData.budget = +salaryAmount.value;
 			appData.getExpenses();
 			appData.getIncome();
@@ -62,7 +55,7 @@ let appData = {
 			appData.getAddIncome();
 			appData.getBudget();
 			appData.showResult();
-		}
+		} else {alert('Ошибка, поле "Месячный доход" должно быть заполнено!');}
 	},
 	//вывод результаты на экран для пользователей
 	showResult: () => {
