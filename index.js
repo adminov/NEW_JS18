@@ -1,12 +1,12 @@
 'use strict';
-let isNumber = (n) => {
-	return !isNaN(parseFloat(n)) && isFinite(n);
-};
-
-let isStr = (str, reg = false) => {
-	const regexp = reg ? /^[, а-яА-ЯёЁa-zA-Z]+$/ : /^[ а-яА-ЯёЁa-zA-Z]+$/;
-	return regexp.test(str);
-};
+// let isNumber = (n) => {
+// 	return !isNaN(parseFloat(n)) && isFinite(n);
+// };
+//
+// let isStr = (str, reg = false) => {
+// 	const regexp = reg ? /^[, а-яА-ЯёЁa-zA-Z]+$/ : /^[ а-яА-ЯёЁa-zA-Z]+$/;
+// 	return regexp.test(str);
+// };
 let budgetMonth = document.getElementsByClassName('budget_month-value')[0];
 let	budgetDay = document.getElementsByClassName('budget_day-value')[0];
 let	expensesMonth = document.getElementsByClassName('expenses_month-value')[0];
@@ -160,31 +160,6 @@ let appData = {
 	getTargetMonth: () => {
 		return Math.ceil(targetAmount.value / appData.budgetMonth);
 	},
-	getStatusIncome: () => {
-		if (appData.budgetDay >= 1200){
-			console.log('У вас высокий уровень дохода')
-		} else if (appData.budgetDay >= 600) {
-			console.log('У вас средний уровень дохода')
-		} else if (appData.budgetDay >= 0){
-			console.log('К сожалению у вас уровень дохода ниже среднего')
-		} else {
-			console.log('Что то пошло не так')
-		}
-	},
-	getInfoDeposit: () => {
-		if (appData.deposit){
-			let percentDeposit = '';
-			do {
-				percentDeposit = prompt('Какой годовой процент', '10');
-			} while (!isNumber(percentDeposit));
-			appData.percentDeposit = +percentDeposit;
-			let moneyDeposit = '';
-			do {
-				moneyDeposit = prompt('Какая сумма заложена', '10000');
-			} while (!isNumber(moneyDeposit));
-			appData.moneyDeposit = +moneyDeposit;
-		}
-	},
 	calcPeriod: () => {
 		return appData.budgetMonth * +periodSelect.value;
 	}
@@ -194,8 +169,3 @@ start.addEventListener('click', appData.start);
 expensesPlus.addEventListener('click', appData.addExpensesBlock);
 incomePlus.addEventListener('click', appData.addIncomeBlock);
 periodSelect.addEventListener('input', appData.changeRangeValue);
-
-// 3) Если getTargetMonth возвращает нам отрицательное значение, то вместо “Цель будет достигнута” необходимо выводить “Цель не будет достигнута”
-// (Math.ceil(appData.getTargetMonth()) >= 0) ?
-// 	console.log('будет достигнута за месяцев: ' + Math.ceil(appData.getTargetMonth())) :
-// 	console.log('Цель не будет достигнута');
