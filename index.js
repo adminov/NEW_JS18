@@ -31,7 +31,8 @@ let btnPlus = document.getElementsByTagName('button'),
 	incomePlus = btnPlus[0],
 	expensesPlus = btnPlus[1],
 	cancel = document.getElementById('cancel'),
-	resetAddExpenses = document.querySelector('[placeholder="название"]');
+	resetAddExpenses = document.querySelector('[placeholder="название"]'),
+	btnPluses = document.querySelectorAll('.btn_plus');
 let periodAmount = document.querySelector('.period-amount');
 //----------------------------------------------------------------------------
 
@@ -50,20 +51,28 @@ let appData = {
 	expensesMonth: 0,
 	start: function () {
 		if (salaryAmount.value.trim() !== '') {
-			appData.budget = +salaryAmount.value;
-			appData.getExpenses();
-			appData.getIncome();
-			appData.getExpensesMonth();
-			appData.getAddExpenses();
-			appData.getAddIncome();
-			appData.getBudget();
-			appData.showResult();
+			this.budget = +salaryAmount.value;
+			this.getExpenses();
+			this.getIncome();
+			this.getExpensesMonth();
+			this.getAddExpenses();
+			this.getAddIncome();
+			this.getBudget();
+			this.showResult();
 
 			//Блокировать все input[type=text]
 			let data = document.querySelectorAll('[type="text"]');
 			data.forEach((i) => {
 				i.disabled = true;
 			});
+
+			btnPluses.forEach((i) => {
+				i.disabled = true;
+			});
+
+			depositCheck.disabled = true;
+			periodSelect.disabled = true;
+
 			if (start) {
 				start.style.display = 'none';
 				cancel.style.display = 'inline';
@@ -176,6 +185,7 @@ let appData = {
 	cancel: function () {
 		let resetName = document.querySelectorAll('[placeholder="Наименование"]'),
 			resetSalary = document.querySelectorAll('[placeholder="Сумма"]');
+
 		budgetMonth.value = '';
 		budgetDay.value = '';
 		expensesMonth.value = '';
@@ -198,6 +208,10 @@ let appData = {
 			i.value = '';
 		});
 
+		btnPluses.forEach((i) => {
+			i.disabled = false;
+		});
+
 		resetAddExpenses.value = '';
 
 		periodSelect.value = '1';
@@ -208,6 +222,23 @@ let appData = {
 			cancel.style.display = 'none';
 			start.style.display = 'inline';
 		}
+
+		let expensesItems = document.querySelectorAll('.expenses-items');
+		if (expensesItems.length !== 0){
+			expensesItems[1].remove();
+			expensesItems[2].remove();
+			expensesPlus.style.display = '';
+		}
+
+		let incomeItems = document.querySelectorAll('.income-items');
+		if (incomeItems.length !== 0){
+			incomeItems[1].remove();
+			incomeItems[2].remove();
+			incomePlus.style.display = '';
+		}
+
+		depositCheck.disabled = false;
+		periodSelect.disabled = false;
 
 			this.income = {}; //доп доход
 			this.addIncome = [];
