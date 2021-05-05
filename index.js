@@ -209,6 +209,19 @@ let appData = {
 			start.style.display = 'inline';
 		}
 
+			this.income = {}; //доп доход
+			this.addIncome = [];
+			this.expenses = {};
+			this.addExpenses = [];//допол, расходов
+			this.deposit = false; //депозит в банке
+			this.percentDeposit = 0;
+			this.moneyDeposit = 0;
+			this.incomeMoth = 0;
+			this.budget = 0; // Доход за месяц
+			this.budgetDay = 0; // Доход за день
+			this.budgetMonth = 0; //обязательных расходов за месяц
+			this.expensesMonth = 0;
+
 	}
 };
 
