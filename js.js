@@ -13,10 +13,10 @@ document.addEventListener('DOMContentLoaded', function () {
         let div;
         if (this.selector.substr(0, 1) === '.') {
             div = document.createElement('div');
-            div.className = this.selector;
+            div.className = this.selector.replace('.', '');
         } else if (this.selector.substr(0, 1) === '#') {
             div = document.createElement('p');
-            div.id = this.selector;
+            div.id = this.selector.replace('#', '');
         }
 
         div.style.cssText = `
