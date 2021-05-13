@@ -20,28 +20,30 @@ const start = document.getElementById('start'),
 let expensesItems = document.querySelectorAll('.expenses-items'), // Возможные расходы
 	incomeItems = document.querySelectorAll('.income-items'); // Дополнительный доход
 
-const AppData = function () {
-	this.budget = 0;
-	this.budgetDay = 0;
-	this.budgetMonth = 0;
-	this.income = {};
-	this.incomeMonth = 0;
-	this.addIncome = [];
-	this.expenses = {};
-	this.expensesMonth = 0;
-	this.addExpenses = [];
-	this.deposit = false;
-	this.precentDeposit = 0;
-	this.moneyDeposit = 0;
-};
+class AppData {
+	constructor() {
+		this.budget = 0;
+		this.budgetDay = 0;
+		this.budgetMonth = 0;
+		this.income = {};
+		this.incomeMonth = 0;
+		this.addIncome = [];
+		this.expenses = {};
+		this.expensesMonth = 0;
+		this.addExpenses = [];
+		this.deposit = false;
+		this.precentDeposit = 0;
+		this.moneyDeposit = 0;
+	}
+}
 
 AppData.prototype.start = function () {
 	if (start.textContent === 'Рассчитать') {
-		this.getExpenses();
-		this.getIncome();
+		this.getExpInc();
+		this.getAddIncomeExpenses();
 		this.getExpensesMonth();
-		this.getAddExpenses();
-		this.getAddIncome();
+		// this.getAddExpenses();
+		// this.getAddIncome();
 		this.getBudget();
 		this.showResult();
 		this.blockage();
@@ -53,28 +55,27 @@ AppData.prototype.start = function () {
 	console.dir(this);
 };
 
+
 //получение данные из блоков Обязательные расходы наименование и значение
-AppData.prototype.getExpenses = function () {
-	expensesItems.forEach(item => {
-		const itemExpenses = item.querySelector('.expenses-title').value;
-		const cashExpenses = item.querySelector('.expenses-amount').value;
-		if (itemExpenses !== '' && cashExpenses !== '') {
-			this.expenses[itemExpenses] = +cashExpenses;
+// Дополнительный доход
+AppData.prototype.getExpInc = function(){
+	const count = item => {
+		console.log(item.className);
+		const startStr = item.className.split('-')[0];
+		const itemTitle = item.querySelector(`.${startStr}-title`).value;
+		const itemAmount = item.querySelector(`.${startStr}-amount`).value;
+		if (itemTitle !== '' && itemAmount !== '') {
+			this[startStr][itemTitle] = +itemAmount;
 		}
-	});
+	};
+	incomeItems.forEach(count);
+	expensesItems.forEach(count);
+
+	for (const key in this.income){
+		this.incomeMonth += +this.income[key];
+	}
 };
 
-// Дополнительный доход
-AppData.prototype.getIncome = function () {
-	incomeItems.forEach(item => {
-		const itemIncome = item.querySelector('.income-title').value;
-		const cashIncome = item.querySelector('.income-amount').value;
-		if (itemIncome !== '' && cashIncome !== '') {
-			this.income[itemIncome] = +cashIncome;
-			this.incomeMonth += +cashIncome;
-		}
-	});
-};
 // Функция возвращает сумму всех обязательных расходов за месяц
 AppData.prototype.getExpensesMonth = function () {
 	for (let elem in this.expenses) {
@@ -83,24 +84,14 @@ AppData.prototype.getExpensesMonth = function () {
 };
 
 // Получение данных от Возможные расходы
-AppData.prototype.getAddExpenses = function () {
-	const addExpenses = additionalExpensesItem.value.split(',');
-	addExpenses.forEach(item => {
-		item = item.trim();
-		if (item !== '') {
-			this.addExpenses.push(item);
-		}
-	});
-};
-
 // Получение данных от Возможный доход
-AppData.prototype.getAddIncome = function () {
-	additionalIncomeItem.forEach(item => {
-		const itemValue = item.value.trim();
-		if (itemValue !== '') {
-			this.addIncome.push(itemValue);
-		}
-	});
+AppData.prototype.getAddIncomeExpenses = function () {
+	const data = item => {
+		return item.map(e => e.trim()).filter(el => el !== '');
+	};
+
+	this.addExpenses = data(additionalExpensesItem.value.split(','));
+	this.addIncome = data([additionalIncomeItem[0].value, additionalIncomeItem[1].value]);
 };
 
 // Функция возвращает Накопления за месяц (Доходы минус расходы)
@@ -165,6 +156,26 @@ AppData.prototype.reset = function () {
 	this.blockStart();
 };
 
+//Добавление блоков для Дополнительный доход
+//Добавление блоков для Обязательные расходы
+AppData.prototype.addBlocks = function () {
+
+	const addBlock = item => {
+		const target = event.target;
+		const startStr = target.parentNode.className;
+		const cloneItem = document.querySelector(`.${startStr}-items`).cloneNode(true);
+		cloneItem.querySelector(`.${startStr}-title`).value = '';
+		cloneItem.querySelector(`.${startStr}-amount`).value = '';
+		target.parentNode.insertBefore(cloneItem, target);
+		if (document.querySelectorAll(`.${startStr}-items`).length === 3) {
+			target.style.display = 'none';
+		}
+	};
+
+	expensesItems.forEach(addBlock);
+	incomeItems.forEach(addBlock);
+};
+
 //Добавление блоков для Обязательные расходы
 AppData.prototype.addExpensesBlock = function () {
 	const cloneExpensesItem = expensesItems[0].cloneNode(true);
@@ -202,13 +213,41 @@ AppData.prototype.blockStart = function () {
 	start.disabled = !salaryAmount.value.trim();
 };
 
+AppData.prototype.check = function () {
+	let tmpValue = event.target.value.trim();
+	let target = event.target;
+
+	const changeInputNumber = event => {
+		let condition = /.+/,
+			textAlert;
+		if (target.placeholder === 'Наименование') {
+			condition = /^[,. а-яА-ЯёЁ]+$/;
+			textAlert = 'Доупускается ввод только русских букв, пробела, точки и запятой!';
+		}
+		if (target.placeholder === 'Сумма') {
+			condition = /^[\d]+$/;
+			textAlert = 'Доупускается ввод только цифр!';
+		}
+		if (!condition.test(event.target.value.trim()) && event.target.value.trim() !== '') {
+			alert(textAlert);
+			event.target.value = tmpValue;
+			event.target.removeEventListener('change', changeInputNumber);
+		}
+		tmpValue = event.target.value.trim();
+	};
+	event.target.addEventListener('change', changeInputNumber);
+};
+
 AppData.prototype.eventsListeners = function () {
 	this.blockStart();
 	start.addEventListener('click', this.start.bind(this));
-	expensesPlus.addEventListener('click', this.addExpensesBlock);
-	incomePlus.addEventListener('click', this.addIncomeBlock);
+	expensesPlus.addEventListener('click', this.addBlocks);
+	incomePlus.addEventListener('click', this.addBlocks);
 	periodSelect.addEventListener('input', this.changePeriodSelect.bind(this));
 	salaryAmount.addEventListener('input', this.blockStart);
+	document.querySelectorAll('.data input').forEach(input => {
+		input.addEventListener('focus', this.check);
+	});
 };
 
 const appData = new AppData();
