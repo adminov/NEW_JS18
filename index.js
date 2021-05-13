@@ -64,12 +64,9 @@ class AppData {
 				this.incomeMonth += startStr === 'income' ? +itemAmount : null;
 			}
 		};
-		incomeItems.forEach(count);
-		expensesItems.forEach(count);
+		document.querySelectorAll('.income-items').forEach(count);
+		document.querySelectorAll('.expenses-items').forEach(count);
 
-		for (const key in this.income){
-			this.incomeMonth += this.income[key];
-		}
 	}
 
 	// Функция возвращает сумму всех обязательных расходов за месяц
