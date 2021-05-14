@@ -4,7 +4,6 @@ const start = document.getElementById('start'),
 	incomePlus = btnPlus[0], // + Дополнительный доход
 	expensesPlus = btnPlus[1], // + Возможные расходы
 	additionalIncomeItem = document.querySelectorAll('.additional_income-item'), // Возможный доход
-	depositCheck = document.querySelector('#deposit-check'),
 	budgetDayValue = document.getElementsByClassName('budget_day-value')[0],
 	budgetMonthValue = document.getElementsByClassName('budget_month-value')[0],
 	expensesMonthValue = document.getElementsByClassName('expenses_month-value')[0],
@@ -12,16 +11,21 @@ const start = document.getElementById('start'),
 	additionalExpensesValue = document.getElementsByClassName('additional_expenses-value')[0],
 	incomePeriodValue = document.getElementsByClassName('income_period-value')[0], // Накопления за период
 	targetMonthValue = document.getElementsByClassName('target_month-value')[0],
+	depositCheck = document.getElementById('deposit-check'),
+	depositBank = document.querySelector('.deposit-bank'),
+	depositAmount = document.querySelector('.deposit-amount'),
+	depositPercent = document.querySelector('.deposit-percent'),
 	salaryAmount = document.querySelector('.salary-amount'), // Месячный доход
 	additionalExpenses = document.querySelector('.additional_expenses'),
 	periodSelect = document.querySelector('.period-select'), // range
 	additionalExpensesItem = document.querySelector('.additional_expenses-item'), // Возможные расходы
-	targetAmount = document.querySelector('.target-amount'); // Цель
+	targetAmount = document.querySelector('.target-amount'),
+	depositCheckmark = document.querySelector('.deposit-checkmark'); // Цель
 let expensesItems = document.querySelectorAll('.expenses-items'), // Возможные расходы
 	incomeItems = document.querySelectorAll('.income-items'); // Дополнительный доход
 
 class AppData {
-	constructor(budget = 0, budgetDay = 0, budgetMonth = 0, income = {}, incomeMonth = 0, addIncome = [], expenses = {}, expensesMonth = 0, addExpenses = [], deposit = false, precentDeposit = 0, moneyDeposit = 0) {
+	constructor(budget = 0, budgetDay = 0, budgetMonth = 0, income = {}, incomeMonth = 0, addIncome = [], expenses = {}, expensesMonth = 0, addExpenses = [], deposit = false, percentDeposit = 0, moneyDeposit = 0) {
 		this.budget = budget;
 		this.budgetDay = budgetDay;
 		this.budgetMonth = budgetMonth;
@@ -32,7 +36,7 @@ class AppData {
 		this.expensesMonth = expensesMonth;
 		this.addExpenses = addExpenses;
 		this.deposit = deposit;
-		this.precentDeposit = precentDeposit;
+		this.precentDeposit = percentDeposit;
 		this.moneyDeposit = moneyDeposit;
 	}
 
@@ -41,6 +45,7 @@ class AppData {
 			this.getExpInc();
 			this.getExpensesMonth();
 			this.getAddIncomeExpenses();
+			this.getInfoDeposit();
 			this.getBudget();
 			this.showResult();
 			this.blockage();
@@ -90,7 +95,8 @@ class AppData {
 	// Функция возвращает Накопления за месяц (Доходы минус расходы)
 	getBudget () {
 		this.budget = +salaryAmount.value;
-		this.budgetMonth = this.budget + this.incomeMonth - this.expensesMonth;
+		const monthDeposit = this.moneyDeposit * (this.precentDeposit / 100);
+		this.budgetMonth = this.budget + this.incomeMonth - this.expensesMonth + monthDeposit;
 		this.budgetDay = this.budgetMonth / 30;
 	}
 
@@ -118,6 +124,38 @@ class AppData {
 		expensesPlus.disabled = disabled;
 	}
 
+	getInfoDeposit(){
+		if (this.deposit){
+			this.precentDeposit = depositPercent.value;
+			this.moneyDeposit = depositAmount.value;
+		}
+	}
+
+	changePercent(){
+		const valueSelect = this.value;
+		if (valueSelect === 'other') {
+			depositPercent.style.display = 'inline-block';
+		} else {
+			depositPercent.value = valueSelect;
+		}
+	}
+
+	depositHandler(){
+		if (depositCheck.checked) {
+			depositBank.style.display = 'inline-block';
+			depositAmount.style.display = 'inline-block';
+			this.deposit = true;
+			depositBank.addEventListener('change', this.changePercent);
+		} else {
+			depositBank.style.display = 'none';
+			depositAmount.style.display = 'none';
+			depositBank.value = '';
+			depositAmount.value = '';
+			this.deposit = false;
+			depositBank.removeEventListener('change', this.changePercent);
+		}
+	}
+
 	reset () {
 		for (let i = incomeItems.length - 1; i > 0; i--) {
 			incomeItems[0].parentNode.removeChild(incomeItems[i]);
@@ -127,6 +165,12 @@ class AppData {
 		}
 		incomePlus.style.display = '';
 		expensesPlus.style.display = '';
+
+		depositPercent.style.display = 'none';
+		depositPercent.value = '';
+		depositCheck.checked = false;
+		this.depositHandler();
+
 		this.blockage(false);
 		document.querySelectorAll('input[type=text]').forEach(item => {
 			item.value = '';
@@ -147,6 +191,7 @@ class AppData {
 		this.moneyDeposit = 0;
 
 		this.blockStart();
+
 	}
 
 	//Добавление блоков для Дополнительный доход
@@ -176,29 +221,34 @@ class AppData {
 		start.disabled = !salaryAmount.value.trim();
 	}
 
-	check () {
-		let tmpValue = event.target.value.trim();
-		let target = event.target;
+	check() {
+		const target = event.target;
+		let tmpValue = target.value.trim();
 
-		const changeInputNumber = event => {
+		const changeInputNumber = () => {
 			let condition = /.+/,
 				textAlert;
+			let validPervent = true;
 			if (target.placeholder === 'Наименование') {
 				condition = /^[,. а-яА-ЯёЁ]+$/;
 				textAlert = 'Доупускается ввод только русских букв, пробела, точки и запятой!';
 			}
 			if (target.placeholder === 'Сумма') {
-				condition = /^[\d]+$/;
+				condition = /^[\d.]+$/;
 				textAlert = 'Доупускается ввод только цифр!';
 			}
-			if (!condition.test(event.target.value.trim()) && event.target.value.trim() !== '') {
-				alert(textAlert);
-				event.target.value = tmpValue;
-				event.target.removeEventListener('change', changeInputNumber);
+			if (target.placeholder === 'Процент') {
+				condition = /^[\d.]+$/;
+				textAlert = 'Введите корректное значение в поле проценты! (число от 1 до 100)';
+				validPervent = (+target.value.trim() > 0) && (+target.value.trim() < 100);
 			}
-			tmpValue = event.target.value.trim();
+			if (!condition.test(target.value.trim()) && target.value.trim() || !validPervent) {
+				alert(textAlert);
+				target.value = tmpValue;
+			}
+			target.removeEventListener('change', changeInputNumber);
 		};
-		event.target.addEventListener('change', changeInputNumber);
+		target.addEventListener('change', changeInputNumber);
 	}
 
 	eventsListeners () {
@@ -211,6 +261,9 @@ class AppData {
 		document.querySelectorAll('.data input').forEach(input => {
 			input.addEventListener('focus', this.check);
 		});
+		depositAmount.addEventListener('focus', this.check);
+		depositPercent.addEventListener('focus', this.check);
+		depositCheck.addEventListener('change', this.depositHandler.bind(this));
 	}
 
 
