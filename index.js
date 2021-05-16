@@ -137,6 +137,7 @@ class AppData {
 			depositPercent.style.display = 'inline-block';
 		} else {
 			depositPercent.value = valueSelect;
+			depositPercent.style.display = 'none';
 		}
 	}
 
@@ -149,8 +150,10 @@ class AppData {
 		} else {
 			depositBank.style.display = 'none';
 			depositAmount.style.display = 'none';
+			depositPercent.style.display = 'none';
 			depositBank.value = '';
 			depositAmount.value = '';
+			depositPercent.value = '';
 			this.deposit = false;
 			depositBank.removeEventListener('change', this.changePercent);
 		}
