@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         const timer = getTimeRemaining();
-        if (timer.timeRemaining > 0) {
+        if (timer.timeRemaining >= 0) {
             setInterval(updateClock, 1000);
         } else {
             timerHour.textContent = '00';
@@ -35,10 +35,10 @@ document.addEventListener('DOMContentLoaded', () => {
             timerSeconds.textContent = '00';
         }
 
-        updateClock();
+        // updateClock();
 
     }
-    countTimer('27 May 2021');
+    countTimer('28 May 2021');
 
     //меню
     const toggleMenu = () =>{
@@ -99,6 +99,40 @@ document.addEventListener('DOMContentLoaded', () => {
             popup.style.display = 'none';
         });
     };
+    togglePopup();
 
-    togglePopup()
+
+// анимация для скролла
+    const animateScroll = () => {
+        let target = event.target.closest('[href^="#"]'),
+            speed = 0.5;
+        console.log(target);
+
+        if (target) {
+            const pageY = window.pageYOffset,
+                hash = target.href.replace(/[^#]*(.*)/, '$1'),
+                distTopPosition = document.querySelector(hash).getBoundingClientRect().top;
+
+            let start = 0;
+            const step = any => {
+                console.log(any);
+                if (!start) start = any;
+
+                const progress = any - start;
+
+                const r = (distTopPosition < 0 ?
+                    Math.max(pageY - progress / speed, pageY + distTopPosition) :
+                    Math.min(pageY + progress / speed, pageY + distTopPosition));
+
+                window.scrollTo(0,r);
+                if (r < pageY + distTopPosition) requestAnimationFrame(step);
+            };
+
+            requestAnimationFrame(step);
+
+        }
+    };
+
+
+    document.querySelector('main a').addEventListener('click', animateScroll);
 });
