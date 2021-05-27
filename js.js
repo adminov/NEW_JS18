@@ -143,34 +143,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // анимация для скролла
     const animateScroll = () => {
-        let target = event.target.closest('[href^="#"]'),
-            speed = 0.5;
-        console.log(target);
+        const liClick = (event) => {
+            event.preventDefault();
+            const targetId = event.currentTarget.getAttribute('href');
+            window.scrollTo({
+               top: document.querySelector(targetId).offsetTop,
+                behavior: 'smooth'
+            });
+        };
 
-        if (target) {
-            const pageY = window.pageYOffset,
-                hash = target.href.replace(/[^#]*(.*)/, '$1'),
-                distTopPosition = document.querySelector(hash).getBoundingClientRect().top;
-
-            let start = 0;
-            const step = any => {
-                console.log(any);
-                if (!start) start = any;
-
-                const progress = any - start;
-
-                const r = (distTopPosition < 0 ?
-                    Math.max(pageY - progress / speed, pageY + distTopPosition) :
-                    Math.min(pageY + progress / speed, pageY + distTopPosition));
-
-                window.scrollTo(0,r);
-                if (r < pageY + distTopPosition) requestAnimationFrame(step);
-            };
-
-            requestAnimationFrame(step);
-
-        }
+        const mainA = document.querySelectorAll('a');
+        mainA.forEach((elem) => {
+             elem.addEventListener('click', liClick);
+         });
     };
 
-    document.querySelector('main a').addEventListener('click', animateScroll);
+    animateScroll();
 });
