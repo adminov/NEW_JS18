@@ -257,6 +257,86 @@ document.addEventListener('DOMContentLoaded', () => {
 
         startSlide();
     };
-
     slider();
+
+    //Наша команда
+    const team = () => {
+        const commandPhoto = document.querySelectorAll('.container')[7];
+        const img = commandPhoto.querySelectorAll('img');
+
+        const changingPhotos = (event) => {
+            const target = event.target;
+            if (target.classList.contains('command__photo')) {
+                const lastSrc = target.src;
+
+                target.src = target.dataset.img;
+                target.dataset.img = lastSrc;
+            }
+        };
+
+        img.forEach((image) => {
+            image.addEventListener('mouseover', changingPhotos);
+            image.addEventListener('mouseout', changingPhotos);
+        })
+    };
+    team();
+
+    //проверка на цифр в блоке калькулятор
+    const checkCalcBlock = () => {
+        const calcBlock = document.querySelector('.calc-block');
+        const input = calcBlock.querySelectorAll('input');
+        input.forEach((element) => {
+           element.addEventListener('blur', (event) =>{
+               if (event.target.type === 'text') {
+                   event.target.value = event.target.value.replace(/\D/g, '');
+               }
+           })
+        });
+    };
+    checkCalcBlock();
+
+    //проверка на Name Email Phone
+    const checkEmailAll = () => {
+        const formName = document.querySelectorAll('.form-name'),
+            form1Email = document.querySelectorAll('.form-email'),
+            form1Phone = document.querySelectorAll('.form-phone');
+
+        // const reg = new RegExp(/[78]([-()]*\d){10}/g);
+        // const string = `8(960)-260-20-20`;
+        // const number = reg.test(string);
+        // console.log(number);
+
+        form1Phone.forEach((elem) => {
+            elem.addEventListener('blur', (event) => {
+                if (event.target.type === 'tel'){
+                    const str = event.target.value;
+                    event.target.value = str.match(/(^(?!\+.*\(.*\).*\-\-.*$)(?!\+.*\(.*\).*\-$)(\+[0-9]{1,3}\([0-9]{1,3}\)[0-9]{1}([-0-9]{0,8})?([0-9]{0,1})?)$)|(^[0-9]{1,4}$)/);
+                }
+            })
+        });
+
+        // const string = `bA~t*i-sh_naz!i'k@gmail.com`;
+        // const email = string.match(/[Aa-zZ]\w+~\w+\*\w+-\w+\w+_\w+!\w+'\w+@\w+\.\w{2,4}/g);
+        // console.log(email);
+
+        form1Email.forEach((elem) => {
+           elem.addEventListener('blur', (event) => {
+               if (event.target.type === 'email'){
+                   event.target.value = event.target.value.replace(/[Aa-zZ]\w+~\w+\*\w+-\w+\w+_\w+!\w+'\w+@\w+\.\w{2,4}/g, '');
+               }
+           })
+        });
+
+        formName.forEach((elem) => {
+            elem.addEventListener('blur', (event) => {
+                if (event.target.type === 'text'){
+                    const reg = event.target.value.replace(/(^[A-Z]{1}[a-z]{1,14}[A-Z]{1}[a-z]{1,14}$)|(^[А-Я]{1}[а-я]{1,14} [А-Я]{1}[а-я]{1,14}$)/g, '');
+                    event.target.value = reg;
+                }
+            })
+        });
+
+
+    };
+    checkEmailAll()
 });
