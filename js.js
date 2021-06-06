@@ -38,14 +38,14 @@ document.addEventListener('DOMContentLoaded', () => {
         // updateClock();
 
     }
-    countTimer('29 May 2021');
+    countTimer('4 Jun 2021');
 
     //меню
     const toggleMenu = () =>{
         const menu = document.querySelector('menu');
 
         document.addEventListener('click', (event) => {
-           let target = event.target;
+            let target = event.target;
             if (target.closest('.menu')){
                 menu.classList.toggle('active-menu');
             } else if (target.closest('.close-btn') || target.closest('a') || !target.closest('.active-menu')){
@@ -56,17 +56,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
     toggleMenu();
 
-   //popup
+    //popup
     const togglePopup = () => {
         const popup = document.querySelector('.popup'),
             popupBtn = document.querySelectorAll('.popup-btn'),
             popupContent = document.querySelector('.popup-content'),
-        popupData = {
-            count: 150,
-            speed: 3,
-            start: 150,
-            end: 0
-        };
+            popupData = {
+                count: 150,
+                speed: 3,
+                start: 150,
+                end: 0
+            };
 
         const showPopup = () => {
             popupData.start > popupData.end ?
@@ -75,20 +75,20 @@ document.addEventListener('DOMContentLoaded', () => {
             popupContent.style.transform = `translateX(${popupData.count}px)`;
 
             if (popupData.start > popupData.end ?
-            popupData.count > popupData.end :
-            popupData.count < popupData.end){
+                popupData.count > popupData.end :
+                popupData.count < popupData.end){
                 requestAnimationFrame(showPopup);
             }
         };
 
         popupBtn.forEach((elem) => {
-           elem.addEventListener('click', () => {
-               popup.style.display = 'block';
-               if (screen.width > 768) {
-                   popupData.count = popupData.start;
-                   requestAnimationFrame(showPopup);
-               }
-           });
+            elem.addEventListener('click', () => {
+                popup.style.display = 'block';
+                if (screen.width > 768) {
+                    popupData.count = popupData.start;
+                    requestAnimationFrame(showPopup);
+                }
+            });
         });
 
         popup.addEventListener('click', (event) => {
@@ -126,15 +126,15 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         tabHeader.addEventListener('click', (event) => {
-           let target = event.target;
-           target = target.closest('.service-header-tab');
-           if (target){
-               tab.forEach((item, index) => {
-                   if (item === target){
-                       toggleTabContent(index)
-                   }
-               });
-           }
+            let target = event.target;
+            target = target.closest('.service-header-tab');
+            if (target){
+                tab.forEach((item, index) => {
+                    if (item === target){
+                        toggleTabContent(index)
+                    }
+                });
+            }
 
         });
 
@@ -147,15 +147,15 @@ document.addEventListener('DOMContentLoaded', () => {
             event.preventDefault();
             const targetId = event.currentTarget.getAttribute('href');
             window.scrollTo({
-               top: document.querySelector(targetId).offsetTop,
+                top: document.querySelector(targetId).offsetTop,
                 behavior: 'smooth'
             });
         };
 
         const mainA = document.querySelectorAll('menu a');
         mainA.forEach((elem) => {
-             elem.addEventListener('click', liClick);
-         });
+            elem.addEventListener('click', liClick);
+        });
     };
     animateScroll();
 
@@ -242,10 +242,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // при наведение мышки вызывается ф-я stopSlide
         slider.addEventListener('mouseover', (event) => {
-           const target = event.target;
+            const target = event.target;
             if (target.matches('.portfolio-btn') || target.matches('.dot')){
-               stopSlide()
-           }
+                stopSlide()
+            }
         });
         // при наведение мышки вызывается ф-я startSlide
         slider.addEventListener('mouseout', (event) => {
@@ -281,62 +281,253 @@ document.addEventListener('DOMContentLoaded', () => {
     };
     team();
 
-    //проверка на цифр в блоке калькулятор
-    const checkCalcBlock = () => {
-        const calcBlock = document.querySelector('.calc-block');
-        const input = calcBlock.querySelectorAll('input');
-        input.forEach((element) => {
-           element.addEventListener('blur', (event) =>{
-               if (event.target.type === 'text') {
-                   event.target.value = event.target.value.replace(/\D/g, '');
-               }
-           })
-        });
-    };
-    checkCalcBlock();
 
-    //проверка на Name Email Phone
-    const checkEmailAll = () => {
-        const formName = document.querySelectorAll('.form-name'),
-            form1Email = document.querySelectorAll('.form-email'),
-            form1Phone = document.querySelectorAll('.form-phone');
+    // Валидация контактных данных
+    const validateInputs = () => {
+        const calcInputs = document.querySelectorAll('.calc-item'),
+            formName = document.querySelectorAll('[name=user_name]'),
+            formMessage = document.querySelectorAll('[name=user_message]'),
+            formEmail = document.querySelectorAll('[name=user_email]');
 
-        // const reg = new RegExp(/[78]([-()]*\d){10}/g);
-        // const string = `8(960)-260-20-20`;
-        // const number = reg.test(string);
-        // console.log(number);
+        const validateNumberInputs = () => {
+            calcInputs.forEach(el => {
+                el.value = el.value.replace(/[^\d]/g, '');
+            })
+        };
 
-        form1Phone.forEach((elem) => {
-            elem.addEventListener('blur', (event) => {
-                if (event.target.type === 'tel'){
-                    const str = event.target.value;
-                    event.target.value = str.match(/(^(?!\+.*\(.*\).*\-\-.*$)(?!\+.*\(.*\).*\-$)(\+[0-9]{1,3}\([0-9]{1,3}\)[0-9]{1}([-0-9]{0,8})?([0-9]{0,1})?)$)|(^[0-9]{1,4}$)/);
-                }
+        const validateLetterInputs = (input) => {
+            input.value = input.value.replace(/[^а-яё\-\ ]/gi, '');
+        };
+
+        const inputsHandler = (e) => {
+            if (e.target.matches('.calc-item')) {
+                validateNumberInputs();
+            }
+            if (e.target.matches('[name=user_name]')) {
+                validateLetterInputs(e.target);
+            }
+            if (e.target.matches('#form2-message')) {
+                validateLetterInputs(e.target);
+            }
+            if (e.target.matches('[name=user_email]')) {
+                e.target.value = e.target.value.replace(/[^a-z\@\_\-\.\!\~\*\']/gi, '');
+            }
+            if (e.target.matches('[type=tel]')) {
+                e.target.value = e.target.value.replace(/[^\d\(\)\-]/g, '');
+            }
+        };
+
+        const checkInputs = (input, exp) => {
+            while (!!input.value.match(exp)) {
+                input.value = input.value.replace(exp, '');
+            }
+        };
+
+        const trim = (input) => {
+            input.value = input.value.replace(/\s+/g, ' ');
+            input.value = input.value.replace(/\-+/g, '-');
+
+            let inputToExp = new RegExp("ReGeX" + input.value + "ReGeX");
+            if (/^[/ /-]/.test(inputToExp)) {
+                input.value = input.value.replace(/^[/ /-]/, '')
+            }
+            if(/[/ /-]$/.test(inputToExp)) {
+                input.value = input.value.replace(/[/ /-]$/, '')
+            }
+        };
+
+        function capitalize(input) {
+            let inputValue = input.value
+            return inputValue.split(' ').map(item =>
+                item.charAt(0).toUpperCase() + item.slice(1).toLowerCase()).join(' ');
+        }
+
+        formName.forEach(el => {
+            el.addEventListener('blur', () => {
+                checkInputs(el, /[^а-яё\-\ ]/gi);
+                trim(el);
+                el.value = capitalize(el)
             })
         });
 
-        // const string = `bA~t*i-sh_naz!i'k@gmail.com`;
-        // const email = string.match(/[Aa-zZ]\w+~\w+\*\w+-\w+\w+_\w+!\w+'\w+@\w+\.\w{2,4}/g);
-        // console.log(email);
-
-        form1Email.forEach((elem) => {
-           elem.addEventListener('blur', (event) => {
-               if (event.target.type === 'email'){
-                   event.target.value = event.target.value.replace(/[Aa-zZ]\w+~\w+\*\w+-\w+\w+_\w+!\w+'\w+@\w+\.\w{2,4}/g, '');
-               }
-           })
-        });
-
-        formName.forEach((elem) => {
-            elem.addEventListener('blur', (event) => {
-                if (event.target.type === 'text'){
-                    const reg = event.target.value.replace(/(^[A-Z]{1}[a-z]{1,14}[A-Z]{1}[a-z]{1,14}$)|(^[А-Я]{1}[а-я]{1,14} [А-Я]{1}[а-я]{1,14}$)/g, '');
-                    event.target.value = reg;
-                }
+        formMessage.forEach(el => {
+            el.addEventListener('blur', () => {
+                checkInputs(el, /[^а-яё\-\ ]/gi);
+                trim(el);
             })
         });
 
+        formEmail.forEach(el => {
+            el.addEventListener('blur', () => {
+                checkInputs(el, /[^a-z\@\_\-\.\!\~\*\']/gi);
+                trim(el);
+            })
+        });
+
+        window.addEventListener('input', inputsHandler);
+    };
+    validateInputs();
+
+    //калькулятор
+    const calc = (price = 100) => {
+        const calcBlock = document.querySelector('.calc-block'),
+            calcType = document.querySelector('.calc-type'),
+            calcSquary = document.querySelector('.calc-square'),
+            calcDay = document.querySelector('.calc-day'),
+            calcCount = document.querySelector('.calc-count'),
+            totalValue = document.getElementById('total');
+
+        const countSum = () => {
+            let total = 0,
+                counrValue = 1,
+                dayValue = 10,
+                step = 50;
+            const typeValue = calcType.options[calcType.selectedIndex].value,
+                squareValue = +calcSquary.value;
+
+            if (calcCount.value > 1) {
+                counrValue += (calcCount.value - 1) / 10;
+            }
+
+            if (calcDay.value) {
+                if (calcDay.value < 5) {
+                    dayValue *= 2;
+                } else if (calcDay.value < 10) {
+                    dayValue *= 1.5;
+                }
+            }
+
+            if (!!typeValue && !!squareValue) {
+                total = price * typeValue * squareValue * counrValue * dayValue;
+            }
+
+            if (totalValue.textContent != total) {
+                if (totalValue.textContent > total) {
+                    step = -1;
+                }
+
+                let timer = setInterval(() => {
+                    totalValue.textContent = +totalValue.textContent + step;
+                    if ((total - totalValue.textContent) * step < 1) {
+                        clearInterval(timer);
+                        totalValue.textContent = Math.round(total);
+                    }
+                }, 0);
+            }
+        };
+
+        calcBlock.addEventListener('change', event => {
+            const target = event.target;
+            if (target.matches('.calc-day') || target.matches('.calc-type') ||
+                target.matches('.calc-square') || target.matches('.calc-count')) {
+                countSum();
+            }
+        });
 
     };
-    checkEmailAll()
+    calc(100);
+
+    //send-ajax-form
+    const sendForm = () => {
+        const errorMessage = ' Что-то пошло не так...',
+            loadMessage = ' Загрузка...',
+            successMessage = ' Спасибо! Мы скоро с вами свяжемся!',
+            errorImg = './images/wait/error.png',
+            loadImg = './images/wait/wait.gif',
+            successImg = './images/wait/success.png';
+//отправляем данных на сервер виде JSON.stringify
+        const postData = (body) => {
+            return new Promise((resolve, reject) => {
+                const request = new XMLHttpRequest();
+
+                request.addEventListener('readystatechange', () => {
+                    // если статус не равен к 4 то идем дальше на следующую условию
+                    if (request.readyState !== 4) {
+                        return;
+                    }
+                    if (request.status === 200) {
+                        resolve();
+                    } else {
+                        reject(request.status);
+                    }
+                });
+
+                request.open('POST', './server.php');
+                request.setRequestHeader('Content-Type', 'application/json');
+                request.send(JSON.stringify(body));
+            });
+        };
+//чистка инпутов после отправки данных
+        const clearInput = idForm => {
+            const form = document.getElementById(idForm);
+
+            [...form.elements]
+                .filter(item =>
+                    item.tagName.toLowerCase() !== 'button' &&
+                    item.type !== 'button')
+                .forEach(item =>
+                    item.value = '');
+        };
+//проверка валидация
+        const isValid = event => {
+            const target = event.target;
+
+            if (target.matches('.form-phone')) {
+                target.value = target.value.replace(/[^+\d]/g, '');
+            }
+
+            if (target.name === 'user_name') {
+                target.value = target.value.replace(/[^а-яё ]/gi, '');
+            }
+
+            if (target.matches('.mess')) {
+                target.value = target.value.replace(/[^а-яё ,.]/gi, '');
+            }
+        };
+
+        const processingForm = idForm => {
+            const form = document.getElementById(idForm);
+            const statusMessage = document.createElement('div');
+            const img = document.createElement('img');
+
+            statusMessage.style.cssText = 'font-size: 2rem; color: #fff';
+            img.height = 50;
+
+            form.addEventListener('submit', event => {
+                const formData = new FormData(form);
+                const body = {};
+
+                event.preventDefault();
+                statusMessage.textContent = loadMessage;
+                img.src = loadImg;
+                statusMessage.insertBefore(img, statusMessage.firstChild);
+                form.appendChild(statusMessage);
+
+                formData.forEach((val, key) => {
+                    body[key] = val;
+                });
+
+                postData(body)
+                    .then(() => {
+                        statusMessage.textContent = successMessage;
+                        img.src = successImg;
+                        statusMessage.insertBefore(img, statusMessage.firstChild);
+                        clearInput(idForm);
+                    })
+                    .catch((error) => {
+                        statusMessage.textContent = errorMessage;
+                        img.src = errorImg;
+                        statusMessage.insertBefore(img, statusMessage.firstChild);
+                        console.error(error);
+                    });
+            });
+            form.addEventListener('input', isValid);
+        };
+
+        processingForm('form1');
+        processingForm('form2');
+        processingForm('form3');
+    };
+    sendForm()
+
 });
