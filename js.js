@@ -333,7 +333,7 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         const capitalize = (input) => {
-            let inputValue = input.value
+            let inputValue = input.value;
             return inputValue.split(' ').map(item =>
                 item.charAt(0).toUpperCase() + item.slice(1).toLowerCase()).join(' ');
         };
