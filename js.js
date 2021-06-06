@@ -281,64 +281,102 @@ document.addEventListener('DOMContentLoaded', () => {
     };
     team();
 
-    //проверка на цифр в блоке калькулятор
-    const checkCalcBlock = () => {
-        const calcBlock = document.querySelector('.calc-block');
-        const input = calcBlock.querySelectorAll('input');
-        input.forEach((element) => {
-            element.addEventListener('blur', (event) =>{
-                if (event.target.type === 'text') {
-                    event.target.value = event.target.value.replace(/\D/g, '');
-                }
+    // Валидация контактных данных
+    const validateInputs = () => {
+        const calcInputs = document.querySelectorAll('input.calc-item'),
+            formName = document.querySelectorAll('[name=user_name]'),
+            formMessage = document.querySelectorAll('[name=user_message]'),
+            formEmail = document.querySelectorAll('[name=user_email]'),
+            formPhone = document.querySelectorAll('[name=user_phone]');
+
+        let error = new Set();
+
+        const validateNumberInputs = () => {
+            calcInputs.forEach(el => {
+                el.value = el.value.replace(/[^\d]/g, '');
+            })
+        };
+
+        const validateLetterInputs = (input) => {
+            input.value = input.value.replace(/[^а-яё0-9\.\,\:\-\!\? ]/gi, '');
+        };
+
+        const inputsHandler = (e) => {
+            if (e.target.matches('.calc-item')) {
+                validateNumberInputs();
+            }
+            if (e.target.matches('[name=user_name]')) {
+                e.target.value = e.target.value.replace(/[^а-яё\-\ ]/gi, '');
+            }
+            if (e.target.matches('#form2-message')) {
+                validateLetterInputs(e.target);
+            }
+            if (e.target.matches('[name=user_email]')) {
+                e.target.value = e.target.value.replace(/[^a-z\@\_\-\.\!\~\*\']/gi, '');
+            }
+            if (e.target.matches('[name=user_phone]')) {
+                e.target.value = e.target.value.replace(/[^\d\(\)\-\+]/g, '');
+            }
+        };
+
+        const trim = (input) => {
+            input.value = input.value.replace(/\s+/g, ' ');
+            input.value = input.value.replace(/\-+/g, '-');
+
+            let inputToExp = new RegExp("ReGeX" + input.value + "ReGeX");
+            if (/^[/ /-]/.test(inputToExp)) {
+                input.value = input.value.replace(/^[/ /-]/, '')
+            }
+            if (/[/ /-]$/.test(inputToExp)) {
+                input.value = input.value.replace(/[/ /-]$/, '')
+            }
+        };
+
+        const capitalize = (input) => {
+            let inputValue = input.value
+            return inputValue.split(' ').map(item =>
+                item.charAt(0).toUpperCase() + item.slice(1).toLowerCase()).join(' ');
+        };
+
+        const controlInputs = (input, exp, message = 'Введите корректные данные') => {
+            if (!input.value.match(exp)) {
+                error.add(input.value);
+                input.value = '';
+            }
+        };
+
+        formName.forEach(el => {
+            el.addEventListener('blur', () => {
+                trim(el);
+                el.value = capitalize(el);
+                controlInputs(el, /[а-яё]{2,}/gi);
             })
         });
-    };
-    checkCalcBlock();
 
-    //проверка на Name Email Phone
-    // const checkEmailAll = () => {
-    //     const formName = document.querySelectorAll('.form-name'),
-    //         form1Email = document.querySelectorAll('.form-email'),
-    //         form1Phone = document.querySelectorAll('.form-phone');
-    //
-    //     // const reg = new RegExp(/[78]([-()]*\d){10}/g);
-    //     // const string = `8(960)-260-20-20`;
-    //     // const number = reg.test(string);
-    //     // console.log(number);
-    //
-    //     form1Phone.forEach((elem) => {
-    //         elem.addEventListener('blur', (event) => {
-    //             if (event.target.type === 'tel'){
-    //                 const str = event.target.value;
-    //                 event.target.value = str.match(/(^(?!\+.*\(.*\).*\-\-.*$)(?!\+.*\(.*\).*\-$)(\+[0-9]{1,3}\([0-9]{1,3}\)[0-9]{1}([-0-9]{0,8})?([0-9]{0,1})?)$)|(^[0-9]{1,4}$)/);
-    //             }
-    //         })
-    //     });
-    //
-    //     // const string = `bA~t*i-sh_naz!i'k@gmail.com`;
-    //     // const email = string.match(/[Aa-zZ]\w+~\w+\*\w+-\w+\w+_\w+!\w+'\w+@\w+\.\w{2,4}/g);
-    //     // console.log(email);
-    //
-    //     form1Email.forEach((elem) => {
-    //        elem.addEventListener('blur', (event) => {
-    //            if (event.target.type === 'email'){
-    //                event.target.value = event.target.value.replace(/[Aa-zZ]\w+~\w+\*\w+-\w+\w+_\w+!\w+'\w+@\w+\.\w{2,4}/g, '');
-    //            }
-    //        })
-    //     });
-    //
-    //     formName.forEach((elem) => {
-    //         elem.addEventListener('blur', (event) => {
-    //             if (event.target.type === 'text'){
-    //                 const reg = event.target.value.replace(/(^[A-Z]{1}[a-z]{1,14}[A-Z]{1}[a-z]{1,14}$)|(^[А-Я]{1}[а-я]{1,14} [А-Я]{1}[а-я]{1,14}$)/g, '');
-    //                 event.target.value = reg;
-    //             }
-    //         })
-    //     });
-    //
-    //
-    // };
-    // checkEmailAll();
+        formMessage.forEach(el => {
+            el.addEventListener('blur', () => {
+                controlInputs(el, /[^а-яё0-9\.\,\:\-\!\? ]/gi);
+                trim(el);
+            })
+        });
+
+        formEmail.forEach(el => {
+            el.addEventListener('blur', () => {
+                controlInputs(el, /\w+@\w+\.\w{2,3}/g);
+                trim(el);
+            })
+        });
+
+        formPhone.forEach(el => {
+            el.addEventListener('blur', () => {
+                trim(el);
+                controlInputs(el, /^\+?[78]([-()]*\d){10}$/g);
+            })
+        });
+
+        window.addEventListener('input', inputsHandler);
+    };
+    validateInputs();
 
     //калькулятор
     const calc = (price = 100) => {
@@ -349,48 +387,56 @@ document.addEventListener('DOMContentLoaded', () => {
             calcCount = document.querySelector('.calc-count'),
             totalValue = document.getElementById('total');
 
+        let total = 0;
+        let timeout;
+
         const countSum = () => {
-            let total = 0,
-                countValue = 1,
+            let countValue = 1,
                 dayValue = 1;
-            let step = 50;
-            const typeValue = calcType.options[calcType.selectedIndex].value,
+
+            const typeValue = calcType.value,
                 squareValue = +calcSquare.value;
 
-            if (calcCount.value > 1){
+            if (calcCount.value > 1) {
                 countValue += (calcCount.value - 1) / 10;
             }
-            if (calcDay.value && calcDay.value < 5){
+            if (calcDay.value && calcDay.value < 5) {
                 dayValue *= 2;
-            } else if (calcDay.value && calcDay.value < 10){
+            } else if (calcDay.value && calcDay.value < 10) {
                 dayValue *= 1.5;
             }
-
-            if (typeValue && squareValue){
+            if (typeValue && squareValue) {
                 total = price * typeValue * squareValue * countValue * dayValue;
             }
+            total = Math.floor(total);
+        };
 
-            if (totalValue.textContent != total) {
-                if (totalValue.textContent > total) {
-                    step = -1;
-                }
+        const animateTotal = () => {
+            const target = total;
+            const count = +totalValue.textContent;
+            const speed = 200;
 
-                let timer = setInterval(() => {
-                    totalValue.textContent = +totalValue.textContent + step;
-                    if ((total - totalValue.textContent) * step < 1) {
-                        clearInterval(timer);
-                        totalValue.textContent = Math.round(total);
-                    }
-                }, 0);
+            const inc = target / speed;
+
+            if (count < target) {
+                totalValue.textContent = Math.floor(count + inc);
+                timeout = setTimeout(animateTotal, 5);
+            } else {
+                totalValue.textContent = target;
+                clearTimeout(timeout);
             }
         };
 
         calcBlock.addEventListener('change', (event) => {
             const target = event.target;
-
-            if (target.matches('select') || target.matches('input')){
+            if (target.matches('select') || target.matches('input')) {
                 countSum();
+                animateTotal();
             }
+        });
+
+        calcType.addEventListener('change', () => {
+            total = 0;
         });
 
     };
@@ -404,27 +450,29 @@ document.addEventListener('DOMContentLoaded', () => {
             errorImg = './images/wait/error.png',
             loadImg = './images/wait/wait.gif',
             successImg = './images/wait/success.png';
+//отправляем данных на сервер виде JSON.stringify
+        const postData = (body) => {
+            return new Promise((resolve, reject) => {
+                const request = new XMLHttpRequest();
 
-        const postData = (body, outputData, errorData) => {
-            const request = new XMLHttpRequest();
+                request.addEventListener('readystatechange', () => {
+                    // если статус не равен к 4 то идем дальше на следующую условию
+                    if (request.readyState !== 4) {
+                        return;
+                    }
+                    if (request.status === 200) {
+                        resolve();
+                    } else {
+                        reject(request.status);
+                    }
+                });
 
-            request.addEventListener('readystatechange', () => {
-                if (request.readyState !== 4) {
-                    return;
-                }
-
-                if (request.status === 200) {
-                    outputData();
-                } else {
-                    errorData(request.status);
-                }
+                request.open('POST', './server.php');
+                request.setRequestHeader('Content-Type', 'application/json');
+                request.send(JSON.stringify(body));
             });
-
-            request.open('POST', './server.php');
-            request.setRequestHeader('Content-Type', 'application/json');
-            request.send(JSON.stringify(body));
         };
-
+//чистка инпутов после отправки данных
         const clearInput = idForm => {
             const form = document.getElementById(idForm);
 
@@ -436,20 +484,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     item.value = '');
         };
 
-        const isValid = event => {
-            const target = event.target;
-
-            if (target.matches('.form-phone')) {
-                target.value = target.value.replace(/[^+\d]/g, '');
-            }
-
-            if (target.name === 'user_name') {
-                target.value = target.value.replace(/[^а-яё ]/gi, '');
-            }
-
-            if (target.matches('.mess')) {
-                target.value = target.value.replace(/[^а-яё ,.]/gi, '');
-            }
+        const removeDivSuccessError = () => {
+            const successError = document.querySelector('.successError');
+            setTimeout(() => {
+                successError.remove();
+            }, 2000);
         };
 
         const processingForm = idForm => {
@@ -457,6 +496,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const statusMessage = document.createElement('div');
             const img = document.createElement('img');
 
+            statusMessage.className = 'successError';
             statusMessage.style.cssText = 'font-size: 2rem; color: #fff';
             img.height = 50;
 
@@ -474,26 +514,28 @@ document.addEventListener('DOMContentLoaded', () => {
                     body[key] = val;
                 });
 
-                postData(body, () => {
-                    statusMessage.textContent = successMessage;
-                    img.src = successImg;
-                    statusMessage.insertBefore(img, statusMessage.firstChild);
-                    clearInput(idForm);
-                }, error => {
-                    statusMessage.textContent = errorMessage;
-                    img.src = errorImg;
-                    statusMessage.insertBefore(img, statusMessage.firstChild);
-                    console.error(error);
-                });
+
+                postData(body)
+                    .then(() => {
+                        statusMessage.textContent = successMessage;
+                        img.src = successImg;
+                        statusMessage.insertBefore(img, statusMessage.firstChild);
+                        clearInput(idForm);
+                        removeDivSuccessError();
+                    })
+                    .catch((error) => {
+                        statusMessage.textContent = errorMessage;
+                        img.src = errorImg;
+                        statusMessage.insertBefore(img, statusMessage.firstChild);
+                        console.error(error);
+                    });
             });
-            form.addEventListener('input', isValid);
         };
 
         processingForm('form1');
         processingForm('form2');
         processingForm('form3');
     };
-
     sendForm()
 
 });
