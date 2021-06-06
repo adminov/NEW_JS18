@@ -26,7 +26,6 @@ class Validator {
     }
 
     isValid(elem) {
-        console.log(elem);
         const validatorMethod = {
             notEmpty(elem) {
                 if (elem.value.trim() === '') {
@@ -86,10 +85,10 @@ class Validator {
         const style = document.createElement('style');
         style.textContent = `
 		input.success {
-			border: 2px solid green
+			border: 3px solid green !important;
 		}
 		input.error {
-			border: 2px solid red
+			border: 3px solid red !important;
 		}
 		.validator-error {
 			font-size: 12px;
@@ -102,14 +101,14 @@ class Validator {
     }
 
     setPattern() {
-        /* if (!this.pattern.phone) {
-            this.pattern.phone = /\+?[78]([-()]*\d){10}$/;
-        } */
-        this.pattern.phone = this.pattern.phone ? this.pattern.phone : /\+?[78]([-()]*\d){10}$/;
+        if (!this.pattern.phone) {
+            this.pattern.phone = /^\+?[78]([-()]*\d){10}$/;
+        }
+        //this.pattern.phone = this.pattern.phone ? this.pattern.phone : /\+?[78]([-()]*\d){10}$/;
 
-        /* if (!this.pattern.email) {
+        if (!this.pattern.email) {
             this.pattern.email = /^\w+@\w+\.\w{2,}$/;
-        } */
-        this.pattern.email = this.pattern.email ? this.pattern.email : /^\w+@\w+\.\w{2,}$/;
+        }
+        // this.pattern.email = this.pattern.email ? this.pattern.email : /^\w+@\w+\.\w{2,}$/;
     }
 }
