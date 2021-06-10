@@ -355,7 +355,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         formMessage.forEach(el => {
             el.addEventListener('blur', () => {
-                controlInputs(el, /[^а-яё0-9\.\,\:\-\!\? ]/gi);
+                controlInputs(el, /[^а-яё0-9\.\,\:\-\!\?]/gi);
                 trim(el);
             })
         });
