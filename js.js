@@ -333,12 +333,13 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         const capitalize = (input) => {
-            let inputValue = input.value
+            let inputValue = input.value;
             return inputValue.split(' ').map(item =>
                 item.charAt(0).toUpperCase() + item.slice(1).toLowerCase()).join(' ');
         };
 
         const controlInputs = (input, exp, message = 'Введите корректные данные') => {
+            console.log(typeof input.value.match(exp));
             if (!input.value.match(exp)) {
                 error.add(input.value);
                 input.value = '';
@@ -371,6 +372,7 @@ document.addEventListener('DOMContentLoaded', () => {
             el.addEventListener('blur', () => {
                 trim(el);
                 controlInputs(el, /^\+?[78]([-()]*\d){10}$/g);
+
             })
         });
 
@@ -450,28 +452,7 @@ document.addEventListener('DOMContentLoaded', () => {
             errorImg = './images/wait/error.png',
             loadImg = './images/wait/wait.gif',
             successImg = './images/wait/success.png';
-//отправляем данных на сервер виде JSON.stringify
-        const postData = (body) => {
-            return new Promise((resolve, reject) => {
-                const request = new XMLHttpRequest();
 
-                request.addEventListener('readystatechange', () => {
-                    // если статус не равен к 4 то идем дальше на следующую условию
-                    if (request.readyState !== 4) {
-                        return;
-                    }
-                    if (request.status === 200) {
-                        resolve();
-                    } else {
-                        reject(request.status);
-                    }
-                });
-
-                request.open('POST', './server.php');
-                request.setRequestHeader('Content-Type', 'application/json');
-                request.send(JSON.stringify(body));
-            });
-        };
 //чистка инпутов после отправки данных
         const clearInput = idForm => {
             const form = document.getElementById(idForm);
@@ -516,7 +497,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
                 postData(body)
-                    .then(() => {
+                    .then((response) => {
+                        if (response.status !== 200){
+                            throw new Error('Status network no 200...');
+                        }
                         statusMessage.textContent = successMessage;
                         img.src = successImg;
                         statusMessage.insertBefore(img, statusMessage.firstChild);
@@ -531,10 +515,42 @@ document.addEventListener('DOMContentLoaded', () => {
                     });
             });
         };
-
         processingForm('form1');
         processingForm('form2');
         processingForm('form3');
+
+       //отправляем данных на сервер виде fetch
+        const postData = (body) => {
+            return fetch('./server.php', {
+                method: 'POST',
+                header: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(body)
+            });
+        }
+        //отправляем данных на сервер виде JSON.stringify
+        // const postData = (body) => {
+        //     return new Promise((resolve, reject) => {
+        //         const request = new XMLHttpRequest();
+        //
+        //         request.addEventListener('readystatechange', () => {
+        //             // если статус не равен к 4 то идем дальше на следующую условию
+        //             if (request.readyState !== 4) {
+        //                 return;
+        //             }
+        //             if (request.status === 200) {
+        //                 resolve();
+        //             } else {
+        //                 reject(request.status);
+        //             }
+        //         });
+        //
+        //         request.open('POST', './server.php');
+        //         request.setRequestHeader('Content-Type', 'application/json');
+        //         request.send(JSON.stringify(body));
+        //     });
+        // };
     };
     sendForm()
 
