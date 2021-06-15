@@ -16,7 +16,7 @@ countTimer();
 toggleMenu();
 //popup
 togglePopup();
-//табы
+//табы табы
 tabs();
 // анимация для скролла
 animateScroll();
