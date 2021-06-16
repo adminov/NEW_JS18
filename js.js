@@ -259,6 +259,20 @@ document.addEventListener('DOMContentLoaded', () => {
     };
     slider();
 
+    //проверка на цифр в блоке калькулятор
+    const checkCalcBlock = () => {
+        const calcBlock = document.querySelector('.calc-block');
+        const input = calcBlock.querySelectorAll('input');
+        input.forEach((element) => {
+            element.addEventListener('blur', (event) =>{
+                if (event.target.type === 'text') {
+                    event.target.value = event.target.value.replace(/\D/g, '');
+                }
+            })
+        });
+    };
+    checkCalcBlock();
+
     //Наша команда
     const team = () => {
         const commandPhoto = document.querySelectorAll('.container')[7];
@@ -297,27 +311,10 @@ document.addEventListener('DOMContentLoaded', () => {
             })
         };
 
-        const validateLetterInputs = (input) => {
-            input.value = input.value.replace(/[^а-яё0-9\.\,\:\-\!\? ]/gi, '');
-        };
+        // const validateLetterInputs = (input) => {
+        //     input.value = input.value.replace(/[^а-яё0-9\.\,\:\-\!\? ]/gi, '');
+        // };
 
-        const inputsHandler = (e) => {
-            if (e.target.matches('.calc-item')) {
-                validateNumberInputs();
-            }
-            if (e.target.matches('[name=user_name]')) {
-                e.target.value = e.target.value.replace(/[^а-яё\-\ ]/gi, '');
-            }
-            if (e.target.matches('#form2-message')) {
-                validateLetterInputs(e.target);
-            }
-            if (e.target.matches('[name=user_email]')) {
-                e.target.value = e.target.value.replace(/[^a-z\@\_\-\.\!\~\*\']/gi, '');
-            }
-            if (e.target.matches('[name=user_phone]')) {
-                e.target.value = e.target.value.replace(/[^\d\(\)\-\+]/g, '');
-            }
-        };
 
         const trim = (input) => {
             input.value = input.value.replace(/\s+/g, ' ');
@@ -339,9 +336,8 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         const controlInputs = (input, exp, message = 'Введите корректные данные') => {
-            console.log(typeof input.value.match(exp));
             if (!input.value.match(exp)) {
-                error.add(input.value);
+                alert(message);
                 input.value = '';
             }
         };
@@ -356,7 +352,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         formMessage.forEach(el => {
             el.addEventListener('blur', () => {
-                controlInputs(el, /[^а-яё0-9\.\,\:\-\!\? ]/gi);
+                controlInputs(el, /[^а-яё0-9\.\,\:\-\!\?]/gi);
                 trim(el);
             })
         });
@@ -371,14 +367,14 @@ document.addEventListener('DOMContentLoaded', () => {
         formPhone.forEach(el => {
             el.addEventListener('blur', () => {
                 trim(el);
-                controlInputs(el, /^\+?[78]([-()]*\d){10}$/g);
+                controlInputs(el, /^\+?[78]([-()]*\d){6,10}$/g);
 
             })
         });
-
-        window.addEventListener('input', inputsHandler);
     };
     validateInputs();
+
+
 
     //калькулятор
     const calc = (price = 100) => {
@@ -453,7 +449,7 @@ document.addEventListener('DOMContentLoaded', () => {
             loadImg = './images/wait/wait.gif',
             successImg = './images/wait/success.png';
 
-//чистка инпутов после отправки данных
+        //чистка инпутов после отправки данных
         const clearInput = idForm => {
             const form = document.getElementById(idForm);
 
@@ -465,10 +461,25 @@ document.addEventListener('DOMContentLoaded', () => {
                     item.value = '');
         };
 
+        //Проверка на пустаты
+        const isValid = event => {
+            const target = event.target;
+            if (target.matches('.form-phone')) {
+                target.value = target.value.replace(/[^+\d]/g, '');
+            }
+            if (target.name === 'user_name') {
+                target.value = target.value.replace(/[^а-яё ]/gi, '');
+            }
+            if (target.matches('.mess')) {
+                target.value = target.value.replace(/[^а-яё ,.]/gi, '');
+            }
+        };
+
         const removeDivSuccessError = () => {
             const successError = document.querySelector('.successError');
             setTimeout(() => {
                 successError.remove();
+                document.querySelector('.popup').style.display = 'none';
             }, 2000);
         };
 
@@ -486,71 +497,76 @@ document.addEventListener('DOMContentLoaded', () => {
                 const body = {};
 
                 event.preventDefault();
-                statusMessage.textContent = loadMessage;
-                img.src = loadImg;
-                statusMessage.insertBefore(img, statusMessage.firstChild);
-                form.appendChild(statusMessage);
 
                 formData.forEach((val, key) => {
                     body[key] = val;
                 });
 
+                if (body.user_name === '' || body.user_name === '' || body.user_name === '' || body.user_message === ''){
+                    alert('write correct data')
+                } else {
+                    statusMessage.textContent = loadMessage;
+                    img.src = loadImg;
+                    statusMessage.insertBefore(img, statusMessage.firstChild);
+                    form.appendChild(statusMessage);
+                    postData(body)
+                        .then(() => {
+                            statusMessage.textContent = successMessage;
+                            img.src = successImg;
+                            statusMessage.insertBefore(img, statusMessage.firstChild);
+                            clearInput(idForm);
+                            removeDivSuccessError();
+                        })
+                        .catch((error) => {
+                            statusMessage.textContent = errorMessage;
+                            img.src = errorImg;
+                            statusMessage.insertBefore(img, statusMessage.firstChild);
+                            clearInput(idForm);
+                            removeDivSuccessError();
+                            console.error(error);
+                        });
+                }
 
-                postData(body)
-                    .then((response) => {
-                        if (response.status !== 200){
-                            throw new Error('Status network no 200...');
-                        }
-                        statusMessage.textContent = successMessage;
-                        img.src = successImg;
-                        statusMessage.insertBefore(img, statusMessage.firstChild);
-                        clearInput(idForm);
-                        removeDivSuccessError();
-                    })
-                    .catch((error) => {
-                        statusMessage.textContent = errorMessage;
-                        img.src = errorImg;
-                        statusMessage.insertBefore(img, statusMessage.firstChild);
-                        console.error(error);
-                    });
+                form.addEventListener('input', isValid);
             });
+
         };
         processingForm('form1');
         processingForm('form2');
         processingForm('form3');
 
-       //отправляем данных на сервер виде fetch
         const postData = (body) => {
-            return fetch('./server.php', {
-                method: 'POST',
-                header: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(body)
+            return new Promise((resolve, reject) => {
+                const request = new XMLHttpRequest();
+
+                request.addEventListener('readystatechange', () => {
+                    // если статус не равен к 4 то идем дальше на следующую условию
+                    if (request.readyState !== 4) {
+                        return;
+                    }
+                    if (request.status === 200) {
+                        resolve();
+                    } else {
+                        reject(request.status);
+                    }
+                });
+
+                request.open('POST', './server.php');
+                request.setRequestHeader('Content-Type', 'application/json');
+                request.send(JSON.stringify(body));
             });
-        }
-        //отправляем данных на сервер виде JSON.stringify
-        // const postData = (body) => {
-        //     return new Promise((resolve, reject) => {
-        //         const request = new XMLHttpRequest();
-        //
-        //         request.addEventListener('readystatechange', () => {
-        //             // если статус не равен к 4 то идем дальше на следующую условию
-        //             if (request.readyState !== 4) {
-        //                 return;
-        //             }
-        //             if (request.status === 200) {
-        //                 resolve();
-        //             } else {
-        //                 reject(request.status);
-        //             }
-        //         });
-        //
-        //         request.open('POST', './server.php');
-        //         request.setRequestHeader('Content-Type', 'application/json');
-        //         request.send(JSON.stringify(body));
-        //     });
-        // };
+        };
+        //отправляем данных на сервер виде fetch
+        //  const postData = (body) => {
+        //      return fetch('./server.php', {
+        //          method: 'POST',
+        //          header: {
+        //              'Content-Type': 'application/json'
+        //          },
+        //          body: JSON.stringify(body)
+        //      });
+        //  }
+        // отправляем данных на сервер виде JSON.stringify
     };
     sendForm()
 
