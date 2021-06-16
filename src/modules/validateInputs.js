@@ -14,27 +14,10 @@ const validateInputs = () => {
         })
     };
 
-    const validateLetterInputs = (input) => {
-        input.value = input.value.replace(/[^а-яё0-9\.\,\:\-\!\? ]/gi, '');
-    };
+    // const validateLetterInputs = (input) => {
+    //     input.value = input.value.replace(/[^а-яё0-9\.\,\:\-\!\? ]/gi, '');
+    // };
 
-    const inputsHandler = (e) => {
-        if (e.target.matches('.calc-item')) {
-            validateNumberInputs();
-        }
-        if (e.target.matches('[name=user_name]')) {
-            e.target.value = e.target.value.replace(/[^а-яё\-\ ]/gi, '');
-        }
-        if (e.target.matches('#form2-message')) {
-            validateLetterInputs(e.target);
-        }
-        if (e.target.matches('[name=user_email]')) {
-            e.target.value = e.target.value.replace(/[^a-z\@\_\-\.\!\~\*\']/gi, '');
-        }
-        if (e.target.matches('[name=user_phone]')) {
-            e.target.value = e.target.value.replace(/[^\d\(\)\-\+]/g, '');
-        }
-    };
 
     const trim = (input) => {
         input.value = input.value.replace(/\s+/g, ' ');
@@ -56,9 +39,8 @@ const validateInputs = () => {
     };
 
     const controlInputs = (input, exp, message = 'Введите корректные данные') => {
-        console.log(typeof input.value.match(exp));
         if (!input.value.match(exp)) {
-            error.add(input.value);
+            alert(message);
             input.value = '';
         }
     };
@@ -88,12 +70,10 @@ const validateInputs = () => {
     formPhone.forEach(el => {
         el.addEventListener('blur', () => {
             trim(el);
-            controlInputs(el, /^\+?[78]([-()]*\d){7,10}$/g);
+            controlInputs(el, /^\+?[78]([-()]*\d){6,10}$/g);
 
         })
     });
-
-    window.addEventListener('input', inputsHandler);
 };
 
-export default validateInputs()
+export default validateInputs();
