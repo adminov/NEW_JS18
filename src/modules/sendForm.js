@@ -51,10 +51,9 @@ const sendForm = () => {
         img.height = 50;
 
         form.addEventListener('submit', event => {
+            event.preventDefault();
             const formData = new FormData(form);
             const body = {};
-
-            event.preventDefault();
 
             formData.forEach((val, key) => {
                 body[key] = val;
@@ -127,4 +126,4 @@ const sendForm = () => {
     // отправляем данных на сервер виде JSON.stringify
 };
 
-export default sendForm();
+export default sendForm;

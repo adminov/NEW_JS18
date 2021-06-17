@@ -1,4 +1,4 @@
-function countTimer(deadLine) {
+function countTimer(deadLine = '19 Jun 2021') {
     const timerHour = document.querySelector('#timer-hours'),
         timerMinutes = document.querySelector('#timer-minutes'),
         timerSeconds = document.querySelector('#timer-seconds');
@@ -19,8 +19,6 @@ function countTimer(deadLine) {
         timerHour.textContent = ('0' + timer.hours).slice(-2);
         timerMinutes.textContent = ('0' + timer.minutes).slice(-2);
         timerSeconds.textContent = ('0' + timer.second).slice(-2);
-
-
     }
 
     const timer = getTimeRemaining();
@@ -33,4 +31,4 @@ function countTimer(deadLine) {
     }
 }
 
-export default countTimer('18 Jun 2021');
+export default countTimer;

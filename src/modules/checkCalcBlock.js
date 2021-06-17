@@ -11,4 +11,4 @@ const checkCalcBlock = () => {
     });
 };
 
-export default checkCalcBlock();
+export default checkCalcBlock;

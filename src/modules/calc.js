@@ -61,4 +61,4 @@ const calc = (price = 100) => {
 
 };
 
-export default calc(100);
+export default calc;

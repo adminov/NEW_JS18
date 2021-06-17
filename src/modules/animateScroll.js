@@ -14,4 +14,4 @@ const animateScroll = () => {
         elem.addEventListener('click', liClick);
     });
 };
-export default animateScroll();
+export default animateScroll;

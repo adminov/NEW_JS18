@@ -1,4 +1,5 @@
 'use strict';
+
 import countTimer from "./modules/countTimer";
 import toggleMenu from "./modules/toggleMenu";
 import togglePopup from "./modules/togglePopup";

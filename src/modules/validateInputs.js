@@ -1,18 +1,17 @@
 // Валидация контактных данных
 const validateInputs = () => {
-    const calcInputs = document.querySelectorAll('input.calc-item'),
-        formName = document.querySelectorAll('[name=user_name]'),
+    const formName = document.querySelectorAll('[name=user_name]'),
         formMessage = document.querySelectorAll('[name=user_message]'),
         formEmail = document.querySelectorAll('[name=user_email]'),
         formPhone = document.querySelectorAll('[name=user_phone]');
 
-    let error = new Set();
-
-    const validateNumberInputs = () => {
-        calcInputs.forEach(el => {
-            el.value = el.value.replace(/[^\d]/g, '');
-        })
-    };
+    // let error = new Set();
+    //
+    // const validateNumberInputs = () => {
+    //     calcInputs.forEach(el => {
+    //         el.value = el.value.replace(/[^\d]/g, '');
+    //     })
+    // };
 
     // const validateLetterInputs = (input) => {
     //     input.value = input.value.replace(/[^а-яё0-9\.\,\:\-\!\? ]/gi, '');
@@ -76,4 +75,4 @@ const validateInputs = () => {
     });
 };
 
-export default validateInputs();
+export default validateInputs;
